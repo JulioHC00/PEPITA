@@ -66,3 +66,9 @@ Contains the same information as mcmc_fit_results.csv with the addition to the f
 ### information_analysis_results_no_limb_darkening.csv
 
 Same as information_analysis_results.csv but with predictions made using the analytical implementation of the information analysis presented by M. Price (2014).
+
+### multisector_results.csv
+
+Same as mcmc_fit_results but for multisector fits. Includes predictions of the precisions calculated using our information analysis method.
+
+### tois_with_predictions
