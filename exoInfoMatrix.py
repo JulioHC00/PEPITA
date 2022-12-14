@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 
 class exoInfoMatrix:
-    def __init__(self, exptime, oversample=10000):
+    def __init__(self, exptime, oversample=100):
+        # Initialize the fiducial model variables, cadence value and oversample value.
         self.exptime = exptime
         self.oversample = oversample
         self._t = None,
@@ -19,8 +20,10 @@ class exoInfoMatrix:
         self._m_star_val = None
         self._r_star_val = None
 
+        # Keeps track of whether the parameters have been defined or not
         self.params = None
 
+        # IMPORTANT: This keeps track of the variable names of the model and in which order they're expected to be given.
         self.legend = {
                 "t"      : 0,
                 "period" : 1,
@@ -33,10 +36,12 @@ class exoInfoMatrix:
                 "r_star" : 8
                 }
 
+        # Keep track of whether derivatives, parameters or priors have been calculated
         self._has_deriv = False
         self._has_params = False
         self._has_priors = False
 
+        # Initialize the derivatives, prior and covariance matrices
         self.deriv_matrix = None
         self.priors = None
         self.cov_matrix = None
@@ -51,7 +56,6 @@ class exoInfoMatrix:
         self._has_fisher = False
         self.fisher_matrix = None
 
-        self._has_params = True
 
         # Set values
 
@@ -78,13 +82,15 @@ class exoInfoMatrix:
         r_star = tt.dscalar()
         r = ror * r_star
 
+        # Make sure order is the same as in the legend
+
         self.params = [t, period, t0, ror, b, u1, u2, m_star, r_star]
 
         # Initialize star
 
         self.star = xo.LimbDarkLightCurve(u1, u2)
 
-        # Initialize orbit
+        # Initialize orbit. You may change what parameters you use to define the orbit by changing the values above. Remember to define the self._variable, initalize a scalar variable, include your variables in the legend and include it in self.params. 
 
         self.orbit = xo.orbits.KeplerianOrbit(
                 r_star=r_star,
@@ -94,7 +100,7 @@ class exoInfoMatrix:
                 b=b
                 )
 
-        # Get light_curve function
+        # Get light_curve function. Same here, you can change how you define the lightcurve
 
         self.lc = tt.sum(
                 self.star.get_light_curve(
@@ -106,11 +112,15 @@ class exoInfoMatrix:
                     )
                 )
 
+        # This function serves for calculating the derivatives
         self.val_and_grad_func = theano.function(
                 self.params,
                 [self.lc] + list(theano.grad(self.lc, self.params))
                 )
 
+        self._has_params = True
+
+        # Updates params in case any has changed. Only for internal use
     def _updateParams(self):
         # Call set data to update params
 
@@ -126,10 +136,12 @@ class exoInfoMatrix:
                 r_star_val=self._r_star
                 )
 
+        # Evaluates the derivative and flux at a single point
     def eval_point(self, tval):
         if not self._has_params:
             raise ValueError("Must define parameters first")
 
+            # Remember to include here if you've changed the variables. The order should be the same as in self.params
         return np.stack(
                 self.val_and_grad_func(
                     tval,
@@ -145,6 +157,7 @@ class exoInfoMatrix:
                 )
 
     def eval_deriv_matrix(self):
+        # Evaluates the derivative matrix
         if not self._has_params:
             raise ValueError("Must define parameters first")
 
@@ -201,6 +214,7 @@ class exoInfoMatrix:
         return fig, ax
 
     def setExptime(self, exptime):
+        # Can be used to change the cadence
         self.exptime = exptime
 
         self._has_fisher = False
@@ -210,6 +224,7 @@ class exoInfoMatrix:
         self._updateParams()
 
     def set_priors(self, period_prior=np.nan, t0_prior=np.nan, ror_prior=np.nan, b_prior=np.nan, u1_prior=np.nan, u2_prior=np.nan, m_star_prior=np.nan, r_star_prior=np.nan):
+        # Used to set the priors
         diag = [
                 period_prior,
                 t0_prior,
@@ -227,10 +242,13 @@ class exoInfoMatrix:
         return self.priors
 
     def erase_priors(self):
+        # Erases any priors
         self.priors = None
         self._has_priors = False
+        self._has_fisher = False
 
     def eval_fisher(self, sigma):
+        # Evaluates the fisher information matrix
         if not self._has_params:
             raise ValueError("Must define params first")
 
@@ -276,6 +294,7 @@ class exoInfoMatrix:
         return self.cov_matrix
 
     def get_in_transit(self):
+        # Get number of points in transit
         orbit = xo.orbits.KeplerianOrbit(
                 t0=self._t0,
                 period=self._period,
@@ -292,7 +311,7 @@ class exoInfoMatrix:
         return in_transit
 
     def get_approx_transit_duration(self, n_points=10000):
-
+        # Make an approximation of the transit duration. The higher the number of points the more accurate it will be
         dur_t = np.linspace(-self._period, self._period, n_points)
 
         orbit = xo.orbits.KeplerianOrbit(
@@ -338,6 +357,7 @@ class exoInfoMatrix:
         return duration
 
     def set_t(self, time_array):
+        # Sets the time array
         self._t = time_array
 
         self._has_deriv = False
