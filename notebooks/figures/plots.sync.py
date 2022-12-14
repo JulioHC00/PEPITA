@@ -12,7 +12,7 @@
 #     name: python3
 # ---
 
-# %% [markdown]
+## %% [markdown]
 
 ## Code used to generate most plots used in the paper.
 
@@ -522,7 +522,7 @@ plt.savefig("ror.pdf", bbox_inches='tight')
 
 results = pd.read_csv("../../information_analysis_results.csv")
 
-# Calculate percentage values of the standard deviation
+# calculate percentage values of the standard deviation
 results["ror_sd_percent"] = results["ror_sd"] / results["ror_median"]
 results["ror_fisher_sd_percent"] = results["ror_fisher_sd"] / results["ror_median"]
 
@@ -752,3 +752,168 @@ print(box)
 ax.set_position(box)
 
 plt.savefig('multisector.pdf', bbox_inches='tight')
+
+# %% [markdown]
+
+## Distribution of precision improvements for TOIs
+
+# %%
+
+# Read data
+df = pd.read_csv("../../tois_with_predictions.csv")
+
+# Ratio of precisions 20s to 1800s cadence
+
+df["20sratio"] = df["ror_20_sd"] / df["ror_1800_sd"]
+df["120sratio"] = df["ror_120_sd"] / df["ror_1800_sd"]
+df["600sratio"] = df["ror_600_sd"] / df["ror_1800_sd"]
+
+# %%
+
+
+# Create bins, labels for the bins
+bins = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 10000]
+
+positions = [i for i in range(len(bins)-1)]
+
+labels = []
+
+for i, bin in enumerate(bins):
+    if i == 0 :
+        labels.append(f"[0,10]")
+    elif i == len(bins)-1:
+        continue
+    elif i == len(bins)-2:
+        labels.append(f"$>{bins[-2]}$")
+    else:
+        labels.append(f"[{bin},{bins[i+1]}]")
+
+fig, axes = plt.subplots(ncols=1, nrows=3, figsize=(COLUMN, 2.75*COLUMN), sharex=True)
+
+for i, exptime in enumerate([20,120, 600]):
+
+    ax = axes[i]
+
+    improvements = (1 - df[f"{exptime}sratio"]) * 100
+
+    imrovements = improvements.dropna()
+
+    hist, edges = np.histogram(improvements, bins=bins)
+
+    top = max(hist)
+
+    yticks = np.array([i if i % 20 == 0 else np.nan for i in range(0, top+20)])
+
+    yticks = yticks[~np.isnan(yticks)]
+
+    ylabels = [str(yticks[i]) if i % 1 == 0 else "" for i in range(len(yticks))]
+
+
+    ax.bar(positions, hist, width=0.8, color=ORANGE, edgecolor="k", linewidth=0.5, label="MCMC")
+
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(ylabels)
+
+    ax.set_xticks(positions, minor=False)
+    ax.set_xticklabels(labels, rotation=90, ha="center", verticalalignment="top", fontsize=10)
+
+    ax.grid(axis="x", color="0.8", linestyle="dashed")
+
+    ax.set_xlim(positions[0]-0.5, positions[-1]+0.75)
+
+    middle = positions[int(len(positions)/2)]
+
+#    ax.axvline(1, c = "darkred", linewidth=1)
+
+    ax.set_title(f"Reobservation with {exptime}s cadence", fontsize=11)
+#    ax.set_ylabel("N. of systems")
+
+
+axes[-1].set_xlabel("\% improvement in precision ($1 - \sigma_{xs}/\sigma_{1800s}$)", fontsize=12)
+
+
+for ax in axes:
+    ax.tick_params(which="major", direction='inout')
+    ax.tick_params(which='minor', bottom=False, left=False, right=False, top=False)
+
+plt.tight_layout()
+
+# %% [markdown]
+
+## Compare predictions with non-limb-darkened predictions
+
+# %%
+
+# Read the data with the information analysis predictions and for non-limb-darkened predictions
+
+results = pd.read_csv("../../information_analysis_results.csv")
+results = results.sort_values(by=["hostname", "exptime", "ror_sd"]).drop_duplicates(subset=["hostname", "exptime"], keep="first")
+
+priceresults = pd.read_csv("../nolimbdarkeningpredictions/results_with_price_predictions.csv")
+priceresults = priceresults.sort_values(by=["hostname", "exptime", "ror_sd"]).drop_duplicates(subset=["hostname", "exptime"], keep="first")
+
+# calculate percentage values of the standard deviation
+results["ror_sd_percent"] = results["ror_sd"] / results["ror_median"]
+results["ror_fisher_sd_percent"] = results["ror_fisher_sd"] / results["ror_median"]
+
+priceresults["ror_sd_percent"] = priceresults["ror_sd"] / priceresults["ror_median"]
+priceresults["ror_price_sd_percent"] = priceresults["ror_price_sd"] / priceresults["ror_median"]
+
+# Read our predictions and fit precisions
+predicted = results["ror_fisher_sd_percent"] * 100
+fits = results["ror_sd_percent"] * 100 
+pricepredicted = priceresults["ror_price_sd_percent"] * 100
+pricefits = priceresults["ror_sd_percent"] * 100
+
+# And the absolute errors
+errors = np.abs(predicted - fits)
+signederrors = fits - predicted 
+priceerrors = np.abs(pricepredicted - pricefits)
+signedpriceerrors = pricefits - pricepredicted 
+
+# Set x data points up to the 90 percentile of the fits errors (to avoid edge effects)
+maxfiterrs = np.arange(0, np.percentile(fits, 80), 1)
+
+# Now we calculate the median values of the absolute errors in the predictions for each of the x values of maximum fit error
+
+medianerrors = []
+pricemedianerrors = []
+
+for maxfiterr in maxfiterrs:
+    # Mask to select only values for which the fit error is smaller than maxfiterr
+    mask = [maxfiterr - 3 <= value <= maxfiterr + 3 for value in fits]
+#    mask = [value <= maxfiterr for value in fits]
+
+    medianerror = np.nanmedian(errors[mask])
+    pricemedianerror = np.nanmedian(priceerrors[mask])
+
+    medianerrors.append(medianerror)
+    pricemedianerrors.append(pricemedianerror)
+
+# Now plot
+
+fig, ax = plt.subplots(figsize=(COLUMN, 1.2*COLUMN), dpi=300)
+
+ax.scatter(maxfiterrs, medianerrors, c="w", edgecolor="k", linewidth=1, marker='X', label='Our predictions, median residuals', zorder=100)
+ax.scatter(fits, errors, c="0.4", marker='o', label='Our predictions residuals', s=2)
+ax.scatter(maxfiterrs, pricemedianerrors, c="r", marker='X', label='M. Price (2014) predictions median residuals', edgecolor="k", linewidth=1, zorder=100)
+
+ax.scatter(pricefits, priceerrors, c="#F88379", marker='o', label='M. Price (2014) predictions residuals', s=2)
+
+#ax.scatter(maxfiterrs, np.array(pricemeanerrors) / np.array(meanerrors), c="g", marker='X', label='Ratio M. Price (2014) err. / Our predictions err.', edgecolor="k", linewidth=1, zorder=100)
+
+ax.set_xlim(-0.5, np.percentile(fits, 95) + 0.5)
+ax.set_ylim(-0.1,15)
+ax.set_xlim(-0.5,10.5)
+
+ax.set_xlabel("Fit \% precision", fontsize=10)
+ax.set_ylabel("Absolute \% error in prediction", fontsize=10)
+
+ax.legend(frameon=True, fancybox=False, framealpha=1, edgecolor="k", fontsize=10, loc="center", bbox_to_anchor=(0.5,-0.25))
+
+plt.savefig("compare_price.pdf", bbox_inches="tight")
+
+print(len(signederrors[signederrors < -1]) / len(signederrors))
+print(np.median(signederrors[signederrors < -1]))
+print(len(signedpriceerrors[signedpriceerrors < -1]) / len(signedpriceerrors))
+print(np.median(signedpriceerrors[signedpriceerrors < -1]))
