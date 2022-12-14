@@ -41,14 +41,28 @@ There are columns which refer to different characteristics of the posterior dist
 - r_pl: radius of the planet (in solar radii)
 - b: impact parameter
 ```
-Each of these variables will have a number of columns with extra descriptions in their names corresponding to:
+Each of these variables will have a number of columns with extra descriptions ({variable} can be any of the above) in their names corresponding to:
 
 ```{style="max_height:100px"}
-- _median: median of the posterior
-- _mean: mean of the posterior
-- _sd: standard deviation of the posterior
-- _16p: 16 percentile of the posterior
-- _84p: 84 percentile of the posterior
-- _skewness: skewness of the posterior
-- _rhat: rhat value of the posterior
+- {variable}_median: median of the posterior
+- {variable}_mean: mean of the posterior
+- {variable}_sd: standard deviation of the posterior
+- {variable}_16p: 16 percentile of the posterior
+- {variable}_84p: 84 percentile of the posterior
+- {variable}_skewness: skewness of the posterior
+- {variable}_rhat: rhat value of the posterior
 ```
+
+### information_analysis_results.csv
+
+Contains the same information as mcmc_fit_results.csv with the addition to the following columns for all variables representing predictions of the information analysis made using our numerical method
+
+```{style="max_height:100px"}
+-{variable}_fisher_sd: standard deviation of the posterior as predicted using the information analysis
+- {variable1}_{variable2}_cov: covariance of two variables (variable1 and variable2 being any of the variables defined above)
+- transit_dur: duration of the transit [days]
+```
+
+### information_analysis_results_no_limb_darkening.csv
+
+Same as information_analysis_results.csv but with predictions made using the analytical implementation of the information analysis presented by M. Price (2014).
