@@ -71,4 +71,13 @@ Same as information_analysis_results.csv but with predictions made using the ana
 
 Same as mcmc_fit_results but for multisector fits. Includes predictions of the precisions calculated using our information analysis method.
 
-### tois_with_predictions
+### formatted_toi_predictions.csv
+
+Formatted table with all TESS objects of interest predictions.
+
+```
+- TOI: TESS object of interest
+- 20s_improv: improvement in radius ratio precision with reobservations with 20s cadence
+- 120s_improv: improvement in radius ratio precision with reobservations with 120s cadence
+- 600s_improv: improvement in radius ratio precision with reobservations with 600s cadence
+```
