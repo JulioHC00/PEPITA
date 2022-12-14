@@ -435,3 +435,20 @@ table.rename(columns={
 table.to_latex('improvements_table.tex', index=False, float_format="%.2f")
 
 # Which is the table used in the paper
+
+# %% [markdown]
+
+#### And save a formated csv file of all results
+
+# %%
+
+formatted_table = improvements.drop(labels=['tid', 'ror_sd_20', 'ror_sd_120', 'ror_sd_600', 'ror_sd_1800'], axis=1)
+
+formatted_table.rename(columns={
+    'toi': 'TOI',
+    '20_improv': '20s_improv',
+    '120_improv': '120s_improv',
+    '600_improv': '600s_improv'
+}, inplace=True)
+
+formatted_table.to_csv("formatted_toi_predictions.csv", index=False)
