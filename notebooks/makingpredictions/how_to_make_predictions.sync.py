@@ -76,6 +76,10 @@ plt.show()
 
 sigma1800s = float(np.median(lc.flux_err.value))
 
+# %% [markdown]
+
+#### IMPORTANT: It is required that the errors of the measurements are those corresponding to a scaling of the flux measurements such that the value of the flux outside the transits is 1 (that is, the lightcurve and the errors in the flux measurement must be normalized).
+
 # %%
 
 # From the exoplanet archive (https://exoplanetarchive.ipac.caltech.edu/overview/TOI-1601) (Rodriguez et al. 2021) we have
