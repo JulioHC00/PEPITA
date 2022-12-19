@@ -2,6 +2,26 @@
 
 Files relating to the paper (MISSING)
 
+## Notebooks
+
+Some notebooks are provided either as examples of how to use our information analysis class to make predictions of parameter precisions or to showcase how some of the analyses used in the paper were performed.
+
+### figures/plots.sync.ipynb
+
+Code used to generate the plots of the paper.
+
+### makingpredictions/how_to_make_predictions.sync.ipynb
+
+Example usecase of the exoInfoMatrix class to predict radius ratio precision improvements.
+
+### nolimbdarkeningpredictions/make_predictions.sync.ipynb
+
+Code used to make predictions of radius ratio precisions using the method described in M. Price (2014).
+
+### tois/make_toi_predictions.sync.ipynb
+
+Code used to make predictions for planet candidates.
+
 ## Main files
 
 The main results are contained in the following files
