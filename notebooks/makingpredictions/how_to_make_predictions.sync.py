@@ -203,7 +203,8 @@ for i, value1 in enumerate(["period", "t0", "ror", "b", "u_star1", "u_star2", "m
 
 # %% [markdown]
 
-#### So we predict that by obtaining 27 days (~1 TESS sector) of 20s cadence observations we can improve the precision in the radius ratio by 
+#### So we predict that by obtaining 27 days (~1 TESS sector) of 20s cadence observations we can improve the precision in the radius ratio by
+
 # %%
 improv = ( 1 - predict_ror_sd / ror_sd ) * 100
 
