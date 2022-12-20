@@ -388,7 +388,7 @@ titles = {
 }
 
 
-fig, axes = plt.subplot_mosaic(mosaic=layout,figsize = (2*COLUMN, 1.3*COLUMN), sharex=True, gridspec_kw={"wspace": 0.3})
+fig, axes = plt.subplot_mosaic(mosaic=layout,figsize = (2*COLUMN, 1.5*COLUMN), sharex=True, gridspec_kw={"wspace": 0.3})
 fig.set_facecolor("white")
 
 for name in leg.keys():
@@ -404,6 +404,10 @@ for name in leg.keys():
 
 for name in layout[-1]:
     axes[name].set_xlabel("Time since transit centre [days]", fontsize=12)
+
+handles, labels = axes["period"].get_legend_handles_labels()
+
+fig.legend(handles, labels, fontsize=12, title="Cadences", frameon=True, fancybox=False, shadow=True, loc="upper center", ncol=3, edgecolor="k", bbox_to_anchor=(0.5, 0))
 
 plt.savefig("derivs.pdf", bbox_inches="tight")
 
