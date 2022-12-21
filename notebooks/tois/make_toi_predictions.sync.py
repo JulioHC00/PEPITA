@@ -436,6 +436,25 @@ table.to_latex('improvements_table.tex', index=False, float_format="%.2f")
 
 # Which is the table used in the paper
 
+# %%
+
+# We also generate a longer table for the appendix
+
+N = 100
+
+table = improvements
+
+table.drop(labels=['tid', 'ror_sd_20', 'ror_sd_120', 'ror_sd_600', 'ror_sd_1800'], inplace=True, axis=1)
+
+table.rename(columns={
+    'toi': 'TOI',
+    '20_improv': '20s Improv. [%]',
+    '120_improv': '120s Improv [%]',
+    '600_improv': '600s Improv [%]'
+}, inplace=True)
+
+table.to_latex('long_improvements_table.tex', index=False, float_format="%.2f", caption=f"Predictions for all the planet candidates considered in order of decreasing improvements to the radius ratio precision.")
+
 # %% [markdown]
 
 #### And save a formated csv file of all results
