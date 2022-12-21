@@ -913,11 +913,6 @@ ax.set_xlim(-0.5,10.5)
 ax.set_xlabel("Fit \% precision", fontsize=10)
 ax.set_ylabel("Absolute \% error in prediction", fontsize=10)
 
-ax.legend(frameon=True, fancybox=False, framealpha=1, edgecolor="k", fontsize=10, loc="center", bbox_to_anchor=(0.5,-0.25))
+ax.legend(frameon=True, fancybox=False, framealpha=1, edgecolor="k", fontsize=10, loc="center", bbox_to_anchor=(0.5,-0.25), shadow=True)
 
 plt.savefig("compare_price.pdf", bbox_inches="tight")
-
-print(len(signederrors[signederrors < -1]) / len(signederrors))
-print(np.median(signederrors[signederrors < -1]))
-print(len(signedpriceerrors[signedpriceerrors < -1]) / len(signedpriceerrors))
-print(np.median(signedpriceerrors[signedpriceerrors < -1]))
