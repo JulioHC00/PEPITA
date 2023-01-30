@@ -1,6 +1,6 @@
-# exoInfoMatrix
+# Prediction of Exoplanet Precisions using Information in Transit Analysis (PEPITA)
 
-Files relating to the paper (MISSING)
+Files relating to the paper (awaiting publication)
 
 ## Notebooks
 
