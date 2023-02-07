@@ -1,6 +1,6 @@
 # Prediction of Exoplanet Precisions using Information in Transit Analysis (PEPITA)
 
-Files relating to the paper (awaiting publication)
+Files relating to the paper "Understanding and predicting cadence effects in the characterization of exoplanet transits" (https://doi.org/10.1093/mnras/stad408)
 
 ## Notebooks
 
