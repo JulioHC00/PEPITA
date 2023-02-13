@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pepita"
+version = "0.0.1"
+authors = [
+  { name="Julio Hernandez Camero", email="julhcam@pm.me" },
+]
+description = "Predict the precision of exoplanet parameters from transit light-curves using information analysis techniques."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+license = {text = "MIT License"}
+keywords = ["exoplanets", "analysis", "transits", "lightcurve"]
+dependencies = ["numpy", "theano", "exoplanet", "matplotlib"]
+
+[project.urls]
+"Homepage" = "https://github.com/JulioHC00/PEPITA"
+"Bug Tracker" = "https://github.com/JulioHC00/PEPITA/issues"
