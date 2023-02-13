@@ -4,7 +4,6 @@ import theano.tensor as tt
 import exoplanet as xo
 import matplotlib.pyplot as plt
 
-
 class exoInfoMatrix:
     def __init__(self, exptime, oversample=100):
         # Initialize the fiducial model variables, cadence value and oversample value.
