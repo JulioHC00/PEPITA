@@ -19,7 +19,7 @@
 # %%
 
 # Import the class and lightkurve
-from exoInfoMatrix import exoInfoMatrix
+from pepita import exoInfoMatrix
 import lightkurve as lk
 import numpy as np
 import matplotlib.pyplot as plt
