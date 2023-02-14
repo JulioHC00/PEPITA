@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="134.93671mm"
+   height="67.377869mm"
+   viewBox="0 0 134.93671 67.377869"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <g
+     id="layer2"
+     style="display:inline"
+     transform="translate(-31.75,-82.67719)">
+    <path
+       style="display:inline;fill:none;stroke:#000000;stroke-width:1.36188;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 166.6867,132.86983 h -19.84375 c -3.35834,-1e-5 -2.64583,16.5039 -3.96875,16.5039 -1.32292,0 -2.64583,-66.015602 -5.29167,-66.0156 -1.32291,2e-6 -11.90625,30.65053 -17.19791,30.6501 0,0 -14.08395,1.86234 -21.166615,1.85784 -7.059335,-0.004 -21.09453,-1.87854 -21.09453,-1.87854 -5.270806,-0.46938 -15.946392,-30.629007 -17.269309,-30.629009 -2.645833,-4e-6 -3.968749,66.015599 -5.291667,66.015599 -1.322916,1e-5 -0.610406,-16.5039 -3.96875,-16.5039 H 31.75"
+       id="path14630-3" />
+  </g>
+  <g
+     id="layer3"
+     style="display:inline"
+     transform="translate(-31.75,-82.67719)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.3859px;line-height:1.25;font-family:'FiraCode Nerd Font';-inkscape-font-specification:'FiraCode Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.353215"
+       x="75.295273"
+       y="112.0514"
+       id="text2627"
+       transform="scale(0.74906929,1.33499)"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.3859px;font-family:'FiraCode Nerd Font';-inkscape-font-specification:'FiraCode Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.353215"
+         x="75.295273"
+         y="112.0514"
+         id="tspan2629">P</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:23.5478px;line-height:1.25;font-family:'FiraCode Nerd Font';-inkscape-font-specification:'FiraCode Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.353215"
+       x="101.94563"
+       y="112.0826"
+       id="text3625"
+       transform="scale(0.74906929,1.33499)"><tspan
+         id="tspan3623"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:23.5478px;font-family:'FiraCode Nerd Font';-inkscape-font-specification:'FiraCode Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.353215"
+         x="101.94563"
+         y="112.0826">EPIT</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.3859px;line-height:1.25;font-family:'FiraCode Nerd Font';-inkscape-font-specification:'FiraCode Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.353215"
+       x="162.14966"
+       y="112.05402"
+       id="text4133"
+       transform="scale(0.74906929,1.33499)"><tspan
+         id="tspan4131"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.3859px;font-family:'FiraCode Nerd Font';-inkscape-font-specification:'FiraCode Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.353215"
+         x="162.14966"
+         y="112.05402">A</tspan></text>
+  </g>
+</svg>
