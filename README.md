@@ -9,6 +9,10 @@
     <img src='https://readthedocs.org/projects/pepita/badge/?version=latest' alt='Documentation Status' />
 </a>
 
+<a href="https://emac.gsfc.nasa.gov?cid=2302-002">
+  <img src="https://img.shields.io/badge/EMAC-2302--002-blue" alt="EMAC 2302-002">
+  </a>
+  
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/JulioHC00/PEPITA">
 <img alt="GitHub" src="https://img.shields.io/github/license/JulioHC00/PEPITA">
 </p>
