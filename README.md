@@ -1,7 +1,18 @@
 # Prediction of Exoplanet Precisions using Information in Transit Analysis (PEPITA)
 
+<p align="center">
+  <img width="513" height="256" src="logo_white.png">
+</p>
 
-[![Documentation Status](https://readthedocs.org/projects/pepita/badge/?version=latest)](https://pepita.readthedocs.io/en/latest/?badge=latest)
+<p align="center">
+<a href='https://pepita.readthedocs.io/en/latest/?badge=latest'>
+    <img src='https://readthedocs.org/projects/pepita/badge/?version=latest' alt='Documentation Status' />
+</a>
+
+<img alt="GitHub issues" src="https://img.shields.io/github/issues/JulioHC00/PEPITA">
+<img alt="GitHub" src="https://img.shields.io/github/license/JulioHC00/PEPITA">
+</p>
+
 ## Introduction
 
 PEPITA is a Python package that allows making predictions for the precision of exoplanet parameters using transit light-curves. Behind scenes, it makes use of the Information Analysis techniques to predict the best precision you will get by fitting a light-curve without actually needing to perform the fit.
