@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pepita"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Julio Hernandez Camero", email="julhcam@pm.me" },
 ]
@@ -18,7 +18,7 @@ classifiers = [
 ]
 license = {text = "MIT License"}
 keywords = ["exoplanets", "analysis", "transits", "lightcurve"]
-dependencies = ["numpy", "theano", "exoplanet", "matplotlib"]
+dependencies = ["numpy", "pymc3", "exoplanet", "matplotlib"]
 
 [project.urls]
 "Homepage" = "https://github.com/JulioHC00/PEPITA"

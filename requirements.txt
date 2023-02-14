@@ -1,5 +1,5 @@
 numpy
-theano
+pymc3
 exoplanet
 matplotlib
 mkdocs >= 1.2.2
