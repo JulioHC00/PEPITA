@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Making predictions of precisions &mdash; PEPITA  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Making predictions for TOIs" href="making_toi_predictions.html" />
+    <link rel="prev" title="Example notebooks" href="../examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PEPITA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pepita.html">PEPITA Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Example notebooks</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Making predictions of precisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="making_toi_predictions.html">Making predictions for TOIs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PEPITA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../examples.html">Example notebooks</a></li>
+      <li class="breadcrumb-item active">Making predictions of precisions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/making_predictions.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars and line breaks on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+    white-space: pre;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Making-predictions-of-precisions">
+<h1>Making predictions of precisions<a class="headerlink" href="#Making-predictions-of-precisions" title="Permalink to this heading"></a></h1>
+<p>This notebook introduces the basic usage of the exoInfoMatrix class, used to make predictions about the precision of planetary parameters. For a more specific example aimed at predictions of planet candidates, see the TOIs notebook.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Import the class and lightkurve</span>
+<span class="kn">from</span> <span class="nn">pepita</span> <span class="kn">import</span> <span class="n">exoInfoMatrix</span>
+<span class="kn">import</span> <span class="nn">lightkurve</span> <span class="k">as</span> <span class="nn">lk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">ldtk.filters</span> <span class="k">as</span> <span class="nn">filters</span>
+<span class="kn">from</span> <span class="nn">ldtk</span> <span class="kn">import</span> <span class="n">LDPSetCreator</span><span class="p">,</span> <span class="n">BoxcarFilter</span><span class="p">,</span> <span class="n">TabulatedFilter</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING (theano.tensor.blas): Using NumPy C-API based implementation for BLAS functions.
+</pre></div></div>
+</div>
+<p>Now, suppose you want to make predictions for TOI-1601</p>
+<p>Then we have two situations, suppose we have made observations with 1800s cadence (the case for TOI-1601). Then we can</p>
+<ul class="simple">
+<li><p>Make a Markov Chain Monte Carlo fit to these observations to obtain some planetary and orbital parameters</p></li>
+<li><p>Or find the maximum likelihood set of parameters for the observations.</p></li>
+</ul>
+<p>For our practical case, we will download the 1800s cadecence lightcurve that is available and use it to obtain the mean error in the flux measurements. This will later be used to estimate the errors in measurements made using different cadences.</p>
+<p>For the planetary parameters we’ll use the values reported in the NASA Exoplanet Archive but we could’ve done any of the above too.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">search</span> <span class="o">=</span> <span class="n">lk</span><span class="o">.</span><span class="n">search_lightcurve</span><span class="p">(</span><span class="s2">&quot;TOI-1601&quot;</span><span class="p">,</span> <span class="n">mission</span><span class="o">=</span><span class="s2">&quot;TESS&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We will use ligthcurves from the &#39;TESS-SPOC&#39; pipeline&quot;</span><span class="p">)</span>
+<span class="n">search</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+We will use ligthcurves from the &#39;TESS-SPOC&#39; pipeline
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+SearchResult containing 4 data products.
+
+<table id="table139730335768656">
+<thead><tr><th>#</th><th>mission</th><th>year</th><th>author</th><th>exptime</th><th>target_name</th><th>distance</th></tr></thead>
+<thead><tr><th></th><th></th><th></th><th></th><th>s</th><th></th><th>arcsec</th></tr></thead>
+<tr><td>0</td><td>TESS Sector</td><td>2019</td><td>DIAMANTE</td><td>1800</td><td>139375960</td><td>0.0</td></tr>
+<tr><td>1</td><td>TESS Sector 18</td><td>2019</td><td><a href='https://archive.stsci.edu/hlsp/tess-spoc'>TESS-SPOC</a></td><td>1800</td><td>139375960</td><td>0.0</td></tr>
+<tr><td>2</td><td>TESS Sector 18</td><td>2019</td><td><a href='https://archive.stsci.edu/hlsp/qlp'>QLP</a></td><td>1800</td><td>139375960</td><td>0.0</td></tr>
+<tr><td>3</td><td>TESS Sector 18</td><td>2019</td><td><a href='https://archive.stsci.edu/hlsp/cdips'>CDIPS</a></td><td>1800</td><td>139375960</td><td>0.0</td></tr>
+</table></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Filter to get only the TESS-SPOC results</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">author</span> <span class="o">==</span> <span class="s2">&quot;TESS-SPOC&quot;</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]</span>
+<span class="n">search</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+SearchResult containing 1 data products.
+
+<table id="table139730375507008">
+<thead><tr><th>#</th><th>mission</th><th>year</th><th>author</th><th>exptime</th><th>target_name</th><th>distance</th></tr></thead>
+<thead><tr><th></th><th></th><th></th><th></th><th>s</th><th></th><th>arcsec</th></tr></thead>
+<tr><td>0</td><td>TESS Sector 18</td><td>2019</td><td><a href='https://archive.stsci.edu/hlsp/tess-spoc'>TESS-SPOC</a></td><td>1800</td><td>139375960</td><td>0.0</td></tr>
+</table></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Now download the ligthcurve</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># We have to normalize so that the lightcurve is centred around 0 and flux errors are scaled properly</span>
+<span class="n">lc</span> <span class="o">=</span> <span class="n">search</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">()</span><span class="o">.</span><span class="n">remove_nans</span><span class="p">()</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">remove_outliers</span><span class="p">(</span><span class="n">sigma_lower</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">lc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_making_predictions_7_0.png" src="../_images/notebooks_making_predictions_7_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># The median error of the flux measurements is</span>
+
+<span class="n">sigma1800s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">lc</span><span class="o">.</span><span class="n">flux_err</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p><strong>IMPORTANT: It is required that the errors of the measurements are those corresponding to a scaling of the flux measurements such that the value of the flux outside the transits is 1 (that is, the lightcurve and the errors in the flux measurement must be normalized).</strong></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># From the exoplanet archive (https://exoplanetarchive.ipac.caltech.edu/overview/TOI-1601) (Rodriguez et al. 2021) we have</span>
+
+<span class="n">period</span> <span class="o">=</span> <span class="mf">5.331751</span> <span class="c1"># [days]</span>
+<span class="n">period_sd</span> <span class="o">=</span> <span class="mf">0.000011</span> <span class="c1"># error of period value [days]</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="mf">2458990.55202</span> <span class="c1"># transit mid-point [Barycentric Julian Date (BJD)]</span>
+<span class="n">t0_sd</span> <span class="o">=</span> <span class="mf">0.00081</span> <span class="c1"># error of transit mid-point value [BJD]</span>
+<span class="n">ror</span> <span class="o">=</span> <span class="mf">0.05827</span> <span class="c1"># radius ratio between planet and star</span>
+<span class="n">ror_sd</span> <span class="o">=</span> <span class="mf">0.00071</span> <span class="c1"># error of radius ratio</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mf">0.136</span> <span class="c1"># the impact parameter</span>
+<span class="n">b_sd</span> <span class="o">=</span> <span class="mf">0.13</span> <span class="c1"># error of impact parameter</span>
+<span class="n">m_star</span> <span class="o">=</span> <span class="mf">1.517</span> <span class="c1"># mass of the star [solar mass]</span>
+<span class="n">m_star_sd</span> <span class="o">=</span> <span class="mf">0.053</span> <span class="c1"># error of stellar mass</span>
+<span class="n">r_star</span> <span class="o">=</span> <span class="mf">2.186</span> <span class="c1"># radius of the star [solar radii]</span>
+<span class="n">r_star_sd</span> <span class="o">=</span> <span class="mf">0.074</span> <span class="c1"># error of stellar radius</span>
+<span class="n">teff</span> <span class="o">=</span> <span class="mi">5948</span> <span class="c1"># effective temperature of the star [K]</span>
+<span class="n">teff_sd</span> <span class="o">=</span> <span class="mi">89</span> <span class="c1"># error of effective temperature [K]</span>
+<span class="n">logg</span> <span class="o">=</span> <span class="mf">3.940</span> <span class="c1"># stellar surface gravity [cm/s^2]</span>
+<span class="n">logg_sd</span> <span class="o">=</span> <span class="mf">0.025</span> <span class="c1"># error of stellar surface gravity [cm/s^2]</span>
+<span class="n">z</span> <span class="o">=</span> <span class="mf">0.329</span> <span class="c1"># metallicity [Fe/H]</span>
+<span class="n">z_sd</span> <span class="o">=</span> <span class="mf">0.083</span> <span class="c1"># error in metallicity [Fe/H]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Since there are no values for the limb-darkening parameters we estimate them. See the TOIs notebook for a more in-depth procedure</span>
+
+<span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">create_tess</span><span class="p">()</span>
+
+<span class="n">sc</span> <span class="o">=</span> <span class="n">LDPSetCreator</span><span class="p">(</span><span class="n">teff</span><span class="o">=</span><span class="p">(</span><span class="n">teff</span><span class="p">,</span> <span class="n">teff_sd</span><span class="p">),</span> <span class="n">logg</span><span class="o">=</span><span class="p">(</span><span class="n">logg</span><span class="p">,</span> <span class="n">logg_sd</span><span class="p">),</span> <span class="n">z</span><span class="o">=</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">z_sd</span><span class="p">),</span> <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="n">filt</span><span class="p">])</span>
+
+<span class="n">ps</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">create_profiles</span><span class="p">(</span><span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">qc</span><span class="p">,</span> <span class="n">qe</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">coeffs_qd</span><span class="p">(</span><span class="n">do_mc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">u1</span> <span class="o">=</span> <span class="n">qc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># quadratic limb-darkening coefficient 1</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">qc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># quadratic limb-darkening coefficient 2</span>
+</pre></div>
+</div>
+</div>
+<p>Suppose we want to see what would happen to the precision of the radius ratio if we make observations with 20s cadence during 40 days</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Supposing no interruptions during the 40 days our array of timestamps would be</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">20</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span><span class="p">))</span>
+
+<span class="c1"># With 0 corresponding to when we start observations. Now, imagine we start the observations on the 15th of December 2022. That means day 0 in JD (approximately ~BJD by max error of about ~8 mins) is</span>
+
+<span class="n">day0</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2022-12-15T00:00:00&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">jd</span>
+
+<span class="c1"># So our timestamps are</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">day0</span>
+
+<span class="n">t</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([2459928.5       , 2459928.50023148, 2459928.50046296, ...,
+       2459955.49930556, 2459955.49953704, 2459955.49976852])
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Now we can initalize the information analysis class. The oversample parameter measures how many points are used in each bin when binning the lightcurve to the needed cadence</span>
+
+<span class="n">infomatrix</span> <span class="o">=</span> <span class="n">exoInfoMatrix</span><span class="p">(</span><span class="n">exptime</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">oversample</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Then we set the values for the fiducial model</span>
+
+<span class="n">infomatrix</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span>
+    <span class="n">time_array</span> <span class="o">=</span> <span class="n">t</span><span class="p">,</span>
+    <span class="n">period_val</span> <span class="o">=</span> <span class="n">period</span><span class="p">,</span>
+    <span class="n">t0_val</span> <span class="o">=</span> <span class="n">t0</span><span class="p">,</span>
+    <span class="n">ror_val</span> <span class="o">=</span> <span class="n">ror</span><span class="p">,</span>
+    <span class="n">b_val</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span>
+    <span class="n">u1_val</span> <span class="o">=</span> <span class="n">u1</span><span class="p">,</span>
+    <span class="n">u2_val</span> <span class="o">=</span> <span class="n">u2</span><span class="p">,</span>
+    <span class="n">m_star_val</span> <span class="o">=</span> <span class="n">m_star</span><span class="p">,</span>
+    <span class="n">r_star_val</span> <span class="o">=</span> <span class="n">r_star</span>
+<span class="p">)</span>
+
+<span class="c1"># And we can use the errors of our current values as priors</span>
+
+<span class="n">infomatrix</span><span class="o">.</span><span class="n">set_priors</span><span class="p">(</span>
+    <span class="n">period_prior</span> <span class="o">=</span> <span class="n">period_sd</span><span class="p">,</span>
+    <span class="n">t0_prior</span> <span class="o">=</span> <span class="n">t0_sd</span><span class="p">,</span>
+    <span class="n">ror_prior</span> <span class="o">=</span> <span class="n">ror_sd</span><span class="p">,</span>
+    <span class="n">b_prior</span> <span class="o">=</span> <span class="n">b_sd</span><span class="p">,</span>
+    <span class="n">m_star_prior</span> <span class="o">=</span> <span class="n">m_star_sd</span><span class="p">,</span>
+    <span class="n">r_star_prior</span> <span class="o">=</span> <span class="n">r_star_sd</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Now, we approximate the errors in 20s cadence measurements by scaling the 1800s mean errors</span>
+
+<span class="n">sigma20s</span> <span class="o">=</span> <span class="n">sigma1800s</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1800</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># And we get the covariance matrix</span>
+
+<span class="n">covmatrix</span> <span class="o">=</span> <span class="n">infomatrix</span><span class="o">.</span><span class="n">eval_cov</span><span class="p">(</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma20s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># If we look at the legend</span>
+
+<span class="n">infomatrix</span><span class="o">.</span><span class="n">legend</span>
+
+<span class="c1"># t is not included in the covariance matrix, so if we shift all variables to one value less we see that the row and column corresponding to the radius ratio is the second one. Therefore, the variance predicted for the radius ratio is</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;t&#39;: 0,
+ &#39;period&#39;: 1,
+ &#39;t0&#39;: 2,
+ &#39;ror&#39;: 3,
+ &#39;b&#39;: 4,
+ &#39;u1&#39;: 5,
+ &#39;u2&#39;: 6,
+ &#39;m_star&#39;: 7,
+ &#39;r_star&#39;: 8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">predict_ror_var</span> <span class="o">=</span> <span class="n">covmatrix</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="c1"># And the standard deviation, which is our predicted error is</span>
+
+<span class="n">predict_ror_sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">predict_ror_var</span><span class="p">)</span>
+
+<span class="c1"># We can print the predictions for all variables too</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="s2">&quot;ror&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">,</span> <span class="s2">&quot;m_star&quot;</span><span class="p">,</span> <span class="s2">&quot;r_star&quot;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">value2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="s2">&quot;ror&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">,</span> <span class="s2">&quot;m_star&quot;</span><span class="p">,</span> <span class="s2">&quot;r_star&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">value1</span> <span class="o">==</span> <span class="n">value2</span><span class="p">:</span>
+            <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">covmatrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value1</span><span class="si">}</span><span class="s2"> sd = </span><span class="si">{</span><span class="n">std</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+period sd = 5.064056611849475e-06
+t0 sd = 0.0007535295007894165
+ror sd = 0.0004713626767968396
+b sd = 0.11241866890854353
+u_star1 sd = 0.17692205571293404
+u_star2 sd = 0.3069646421996968
+m_star sd = 0.05076611684564301
+r_star sd = 0.04071672706234801
+</pre></div></div>
+</div>
+<p>So we predict that by obtaining 27 days (~1 TESS sector) of 20s cadence observations we can improve the precision in the radius ratio by</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">improv</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">predict_ror_sd</span> <span class="o">/</span> <span class="n">ror_sd</span> <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">improv</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+33.6%
+</pre></div></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../examples.html" class="btn btn-neutral float-left" title="Example notebooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="making_toi_predictions.html" class="btn btn-neutral float-right" title="Making predictions for TOIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Julio Hernandez Camero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

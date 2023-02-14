@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PEPITA Documentation &mdash; PEPITA  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example notebooks" href="examples.html" />
+    <link rel="prev" title="Prediction of Exoplanet Precisions using Information in Transit Analysis" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PEPITA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PEPITA Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-exoinfomatrix-class">The <code class="docutils literal notranslate"><span class="pre">exoInfoMatrix</span></code> class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.erase_priors"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.erase_priors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_cov"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.eval_cov()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_deriv_matrix"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.eval_deriv_matrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_fisher"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.eval_fisher()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_point"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.eval_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.get_approx_transit_duration"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.get_approx_transit_duration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.get_in_transit"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.get_in_transit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.plot_derivs"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.plot_derivs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.setExptime"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.setExptime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.set_data"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.set_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.set_priors"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.set_priors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pepita.exoInfoMatrix.exoInfoMatrix.set_t"><code class="docutils literal notranslate"><span class="pre">exoInfoMatrix.set_t()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example notebooks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PEPITA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PEPITA Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pepita.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="pepita-documentation">
+<h1>PEPITA Documentation<a class="headerlink" href="#pepita-documentation" title="Permalink to this heading"></a></h1>
+<section id="the-exoinfomatrix-class">
+<h2>The <code class="docutils literal notranslate"><span class="pre">exoInfoMatrix</span></code> class<a class="headerlink" href="#the-exoinfomatrix-class" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pepita.exoInfoMatrix.</span></span><span class="sig-name descname"><span class="pre">exoInfoMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exptime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oversample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Information Analysis Matrix class.</p>
+<p>To initalize, use the exposure time (cadence) of the lightcurve in seconds. For example:</p>
+<blockquote>
+<div><p>info_matrix = exoInfoMatrix(20) # 20 second cadence</p>
+</div></blockquote>
+<p>Then define the parameters of the fiducial model</p>
+<blockquote>
+<div><dl class="simple">
+<dt>info_matrix.set_data(</dt><dd><p>time_array,
+period_val,
+t0_val,
+ror_val,
+b_val,
+u1_val,
+u2_val,
+m_star_val,
+r_star_val,
+)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>To calculate the covariance matrix, passing the error of the measurements into it</p>
+<blockquote>
+<div><p>cov_matrix = info_matrix.eval_cov(sigma)</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.erase_priors">
+<span class="sig-name descname"><span class="pre">erase_priors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.erase_priors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.erase_priors" title="Permalink to this definition"></a></dt>
+<dd><p>Used to erase all priors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.eval_cov">
+<span class="sig-name descname"><span class="pre">eval_cov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.eval_cov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_cov" title="Permalink to this definition"></a></dt>
+<dd><p>Used to evaluate the covariance matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sigma</strong> (<em>float</em><em> or </em><em>array</em>) – Error in the flux measurements. Either a single float value to be used for all points or an array of size len(time_array) with individual errors for each timestamps</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Covariance matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.eval_deriv_matrix">
+<span class="sig-name descname"><span class="pre">eval_deriv_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.eval_deriv_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_deriv_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluates the matrix of derivatives for all timestamps in time_array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix of derivatives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>array</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If fiducial model parameters have not been defined</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.eval_fisher">
+<span class="sig-name descname"><span class="pre">eval_fisher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.eval_fisher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_fisher" title="Permalink to this definition"></a></dt>
+<dd><p>Used to evaluate the information matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sigma</strong> (<em>float</em><em> or </em><em>array</em>) – Error in the flux measurements. Either a single float value to be used for all points or an array of size len(time_array) with individual errors for each timestamps</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Information matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.eval_point">
+<span class="sig-name descname"><span class="pre">eval_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.eval_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.eval_point" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluates the derivatives at a given point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tval</strong> (<em>float</em>) – Time at which to evaluate the derivatives, in same units as time_array</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>array of derivatives</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If values of the fiducial model have not been set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.get_approx_transit_duration">
+<span class="sig-name descname"><span class="pre">get_approx_transit_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.get_approx_transit_duration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.get_approx_transit_duration" title="Permalink to this definition"></a></dt>
+<dd><p>Approximate the duration of the transit. Not efficient and used only for testing purposes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_points</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points for calculating appproximation, by default 10000</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Approximate duration of the transit</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.get_in_transit">
+<span class="sig-name descname"><span class="pre">get_in_transit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.get_in_transit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.get_in_transit" title="Permalink to this definition"></a></dt>
+<dd><p>Get the number of data points which are in-transit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of points in transit</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.plot_derivs">
+<span class="sig-name descname"><span class="pre">plot_derivs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig_ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.plot_derivs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.plot_derivs" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the derivatives of the transit model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fig_ax</strong> (<em>(</em><em>figure</em><em>, </em><em>axes</em><em>)</em><em>, </em><em>optional</em>) – If derivatives should be plotted in given figure and axes. Note that this is meant to be used for plotting different model derivatives on top of eachother and so (figure, axis) should be the output of calling plot_derivs() in other model.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>figure and axes</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(figure, axes)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.setExptime">
+<span class="sig-name descname"><span class="pre">setExptime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exptime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.setExptime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.setExptime" title="Permalink to this definition"></a></dt>
+<dd><p>Changes the exposure time (cadence) of the model. Will force redefinition of parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exptime</strong> (<em>float</em>) – The new cadence in seconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.set_data">
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ror_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u1_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u2_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m_star_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_star_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.set_data" title="Permalink to this definition"></a></dt>
+<dd><p>Set the data for the fiducial model. The fiducial model is used to evaluate the derivatives and can be a first approximation of the planet parameters from the maximum likelihood set of parameters or from previous fits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_array</strong> (<em>array</em><em>[</em><em>float</em><em>]</em>) – Timestamps of the lightcurve. In days.</p></li>
+<li><p><strong>period_val</strong> (<em>float</em>) – Period of the planet in days</p></li>
+<li><p><strong>t0_val</strong> (<em>float</em>) – Reference time for the middle of one of the planet transits. In days.</p></li>
+<li><p><strong>ror_val</strong> (<em>float</em>) – Radius ratio of the planet and star</p></li>
+<li><p><strong>b_val</strong> (<em>float</em>) – Impact parameter of the planet</p></li>
+<li><p><strong>u1_val</strong> (<em>float</em>) – First limb-darkening parameter for a quadratic limb-darkening model</p></li>
+<li><p><strong>u2_val</strong> (<em>float</em>) – Second limb-darkening parameter for a quadratic limb-darkening model</p></li>
+<li><p><strong>m_star_val</strong> (<em>float</em>) – Mass of the star in solar masses</p></li>
+<li><p><strong>r_star_val</strong> (<em>float</em>) – Radius of star in solar radii</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.set_priors">
+<span class="sig-name descname"><span class="pre">set_priors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ror_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u1_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u2_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m_star_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_star_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.set_priors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.set_priors" title="Permalink to this definition"></a></dt>
+<dd><p>Used to define priors for the parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>period_prior</strong> (<em>float</em>) – Prior for planet period in days</p></li>
+<li><p><strong>t0_prior</strong> (<em>float</em>) – Prior for t0 in days</p></li>
+<li><p><strong>ror_prior</strong> (<em>float</em>) – Prior for planet ratio</p></li>
+<li><p><strong>b_prior</strong> (<em>float</em>) – Prior for impact parameter</p></li>
+<li><p><strong>u1_prior</strong> (<em>float</em>) – Prior for first quadratic limb darkening parameter</p></li>
+<li><p><strong>u2_prior</strong> (<em>float</em>) – Prior for second quadratic limb darkening parameter</p></li>
+<li><p><strong>m_star_prior</strong> (<em>float</em>) – Prior for mass of the star</p></li>
+<li><p><strong>r_star_prior</strong> (<em>float</em>) – Prior for radius of the star</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Priors matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pepita.exoInfoMatrix.exoInfoMatrix.set_t">
+<span class="sig-name descname"><span class="pre">set_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pepita/exoInfoMatrix.html#exoInfoMatrix.set_t"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pepita.exoInfoMatrix.exoInfoMatrix.set_t" title="Permalink to this definition"></a></dt>
+<dd><p>Change the time array of the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time_array</strong> (<em>array</em>) – New timestamps for the data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Prediction of Exoplanet Precisions using Information in Transit Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Example notebooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Julio Hernandez Camero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

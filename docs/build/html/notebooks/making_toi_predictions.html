@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Making predictions for TOIs &mdash; PEPITA  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Making predictions of precisions" href="making_predictions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PEPITA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pepita.html">PEPITA Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Example notebooks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="making_predictions.html">Making predictions of precisions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Making predictions for TOIs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PEPITA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../examples.html">Example notebooks</a></li>
+      <li class="breadcrumb-item active">Making predictions for TOIs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/making_toi_predictions.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars and line breaks on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+    white-space: pre;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Making-predictions-for-TOIs">
+<h1>Making predictions for TOIs<a class="headerlink" href="#Making-predictions-for-TOIs" title="Permalink to this heading"></a></h1>
+<p>Load required packages</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">lightkurve</span> <span class="k">as</span> <span class="nn">lk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">c</span>
+<span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="kn">import</span> <span class="n">G</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">ldtk</span> <span class="kn">import</span> <span class="n">LDPSetCreator</span><span class="p">,</span> <span class="n">BoxcarFilter</span><span class="p">,</span> <span class="n">TabulatedFilter</span>
+<span class="kn">from</span> <span class="nn">exoInfoMatrixTOI</span> <span class="kn">import</span> <span class="n">exoInfoMatrix</span>
+<span class="kn">import</span> <span class="nn">ldtk.filters</span> <span class="k">as</span> <span class="nn">filters</span>
+<span class="kn">import</span> <span class="nn">exoplanet</span> <span class="k">as</span> <span class="nn">xo</span>
+<span class="kn">import</span> <span class="nn">torch.multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING (theano.tensor.blas): Using NumPy C-API based implementation for BLAS functions.
+</pre></div></div>
+</div>
+<p>Select only planet candidates</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Read TOIs table from the Nasa Exoplanet Archive (NEA)</span>
+<span class="n">nea_tois</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;nea_tois.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">nea_tois</span> <span class="o">=</span> <span class="n">nea_tois</span><span class="p">[</span><span class="n">nea_tois</span><span class="p">[</span><span class="s2">&quot;tfopwg_disp&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;PC&quot;</span><span class="p">]</span> <span class="c1"># Only want planet candidates</span>
+<span class="n">nea_tois</span> <span class="o">=</span> <span class="n">nea_tois</span><span class="p">[</span><span class="n">nea_tois</span><span class="p">[</span><span class="s2">&quot;pl_pnum&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># And only with a single planet</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial number of planet candidates is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nea_tois</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Only keep if there are values for stellar logg and stellar radius which we will need later on</span>
+<span class="n">nea_tois</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;st_logg&quot;</span><span class="p">,</span> <span class="s2">&quot;st_rad&quot;</span><span class="p">,</span> <span class="s2">&quot;st_teff&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># We also need errors, wherever two values (lower and upper boundaries) for the error are reported or only one is given, we will keep the largest</span>
+<span class="n">nea_tois</span><span class="p">[</span><span class="s2">&quot;st_rad_err&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">nea_tois</span><span class="p">[[</span><span class="s2">&quot;st_raderr1&quot;</span><span class="p">,</span> <span class="s2">&quot;st_raderr2&quot;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">nea_tois</span><span class="p">[</span><span class="s2">&quot;st_logg_err&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">nea_tois</span><span class="p">[[</span><span class="s2">&quot;st_loggerr1&quot;</span><span class="p">,</span> <span class="s2">&quot;st_loggerr2&quot;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">nea_tois</span><span class="p">[</span><span class="s2">&quot;st_teff_err&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">nea_tois</span><span class="p">[[</span><span class="s2">&quot;st_tefferr1&quot;</span><span class="p">,</span> <span class="s2">&quot;st_tefferr2&quot;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># And since we also need the errors later on, only keep columns with errors included</span>
+<span class="n">nea_tois</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;st_rad_err&quot;</span><span class="p">,</span> <span class="s2">&quot;st_logg_err&quot;</span><span class="p">,</span> <span class="s2">&quot;st_teff_err&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nea_tois</span><span class="p">)</span><span class="si">}</span><span class="s2"> planet candidates with values for logg, R_star and T_eff along with errors</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Reset indices</span>
+<span class="n">nea_tois</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Out of these, we want only those which were observed <strong>only</strong> with 1800s cadence.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># We will need to search for the available lightcurves for each of the candidates. Then, if they are only observed with 1800s we add them to a new dataframe</span>
+
+<span class="c1"># This can take long</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">nea_tois</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nea_tois</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">TID</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;TIC </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Results of the lightcurve search</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">lk</span><span class="o">.</span><span class="n">search_lightcurve</span><span class="p">(</span><span class="n">TID</span><span class="p">,</span> <span class="n">mission</span><span class="o">=</span><span class="s2">&quot;TESS&quot;</span><span class="p">)</span>
+
+    <span class="c1"># If there were no matches, a KeyError will be raised</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">exptimes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">exptime</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c1"># We add a note letting us know this PC wasn&#39;t found</span>
+        <span class="n">nea_tois</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;notes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NOT FOUND&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NOT FOUND&quot;</span><span class="p">)</span>
+        <span class="k">continue</span>
+
+    <span class="c1"># We check if the only cadence is 1800s. If it&#39;s not we do not flag this candidate as accepted. Otherwise we do</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exptimes</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="mi">1800</span><span class="p">])):</span>
+        <span class="n">nea_tois</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;notes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NOT ONLY 1800s&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NOT ONLY 1800s&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nea_tois</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;accepted&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ACCEPTED&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Now we save the PCs with observations only in 1800s</span>
+<span class="n">nea_tois</span><span class="p">[</span><span class="n">nea_tois</span><span class="p">[</span><span class="s2">&quot;accepted&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;tois_with_only_1800s.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># And read these results into a new dataframe</span>
+<span class="n">only1800</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;tois_with_only_1800s.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Add columns with some values needed</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We use astropy units to not have to deal with conversion between units.</span>
+
+
+<span class="n">logg</span> <span class="o">=</span> <span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;st_logg&quot;</span><span class="p">]</span> <span class="c1"># Log(g)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">logg</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># g in cm/s^2</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;st_rad&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">R_sun</span> <span class="c1"># Stellar radius in solar radii</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;pl_orbper&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span> <span class="c1"># Period in days</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;pl_trandurh&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">hour</span> <span class="c1"># Transit duration in hours</span>
+
+<span class="c1"># We store the values only, no units</span>
+<span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;st_rho&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">G</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="c1"># Stellar density</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">(((</span><span class="n">g</span> <span class="o">*</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">P</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span> <span class="c1"># Semi-major axis</span>
+
+<span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">value</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">((</span><span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">P</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+
+<span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+</div>
+</div>
+<p>To make stimates, we need fiducial values for the limb-darkening parameters. We obtain approximate values using ‘PyLDTk’.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">create_tess</span><span class="p">()</span> <span class="c1"># Create TESS filters profiles</span>
+
+<span class="n">copy</span> <span class="o">=</span> <span class="n">only1800</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># Copy df to iterate through rows safely</span>
+
+<span class="c1"># Iterate through all rows</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">copy</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">copy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Read effective temperature and logg values</span>
+    <span class="n">teff</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_teff&quot;</span><span class="p">]</span>
+    <span class="n">teff_err</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_logg_err&quot;</span><span class="p">]</span>
+
+    <span class="n">logg</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_logg&quot;</span><span class="p">]</span>
+    <span class="n">logg_err</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_logg_err&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Just to be sure, we check there are no NaN values</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;teff&quot;</span><span class="p">,</span> <span class="s2">&quot;teff_err&quot;</span><span class="p">,</span> <span class="s2">&quot;logg&quot;</span><span class="p">,</span> <span class="s2">&quot;logg_err&quot;</span><span class="p">])</span>
+    <span class="n">anynan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">teff</span><span class="p">,</span> <span class="n">teff_err</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">logg_err</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">anynan</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> has NaN value in </span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">anynan</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create profiles. Because we have no z value from the table we use 0.25 with error 0.125</span>
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">LDPSetCreator</span><span class="p">(</span><span class="n">teff</span><span class="o">=</span><span class="p">(</span><span class="n">teff</span><span class="p">,</span> <span class="n">teff_err</span><span class="p">),</span> <span class="n">logg</span><span class="o">=</span><span class="p">(</span><span class="n">logg</span><span class="p">,</span> <span class="n">logg_err</span><span class="p">),</span> <span class="n">z</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">),</span> <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="n">filt</span><span class="p">])</span>
+
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">create_profiles</span><span class="p">(</span><span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1"># Do a mcmc to get the values, if it can&#39;t converge print message</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">qc</span><span class="p">,</span> <span class="n">qe</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">coeffs_qd</span><span class="p">(</span><span class="n">do_mc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) did not converge&quot;</span><span class="p">)</span>
+        <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star1_sd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star2_sd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">continue</span>
+
+    <span class="c1"># Check no NaN values in results</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">([</span><span class="n">qc</span><span class="p">,</span><span class="n">qe</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) calculated values are nan somewhere&quot;</span><span class="p">)</span>
+
+    <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star1_sd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qe</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">only1800</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;u_star2_sd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qe</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Row 0 out of 193
+Row 1 out of 193
+Row 2 out of 193
+Row 3 out of 193
+Row 4 out of 193
+Row 5 out of 193
+Row 6 out of 193
+Row 7 out of 193
+Row 8 out of 193
+Row 9 out of 193
+Row 10 out of 193
+Row 11 out of 193
+Row 12 out of 193
+Row 13 out of 193
+Row 13 (81831095) did not converge
+Row 14 out of 193
+Row 15 out of 193
+Row 16 out of 193
+Row 17 out of 193
+Row 18 out of 193
+Row 19 out of 193
+Row 20 out of 193
+Row 21 out of 193
+Row 22 out of 193
+Row 23 out of 193
+Row 24 out of 193
+Row 25 out of 193
+Row 26 out of 193
+Row 27 out of 193
+Row 28 out of 193
+Row 29 out of 193
+Row 30 out of 193
+Row 31 out of 193
+Row 32 out of 193
+Row 33 out of 193
+Row 34 out of 193
+Row 35 out of 193
+Row 36 out of 193
+Row 37 out of 193
+Row 38 out of 193
+Row 39 out of 193
+Row 39 (160930264) did not converge
+Row 40 out of 193
+Row 41 out of 193
+Row 42 out of 193
+Row 43 out of 193
+Row 43 (174426662) did not converge
+Row 44 out of 193
+Row 45 out of 193
+Row 46 out of 193
+Row 47 out of 193
+Row 48 out of 193
+Row 49 out of 193
+Row 50 out of 193
+Row 51 out of 193
+Row 52 out of 193
+Row 53 out of 193
+Row 54 out of 193
+Row 55 out of 193
+Row 56 out of 193
+Row 56 (65440953) did not converge
+Row 57 out of 193
+Row 58 out of 193
+Row 59 out of 193
+Row 60 out of 193
+Row 61 out of 193
+Row 62 out of 193
+Row 63 out of 193
+Row 64 out of 193
+Row 65 out of 193
+Row 66 out of 193
+Row 67 out of 193
+Row 68 out of 193
+Row 69 out of 193
+Row 70 out of 193
+Row 71 out of 193
+Row 72 out of 193
+Row 73 out of 193
+Row 74 out of 193
+Row 75 out of 193
+Row 76 out of 193
+Row 77 out of 193
+Row 78 out of 193
+Row 79 out of 193
+Row 80 out of 193
+Row 81 out of 193
+Row 82 out of 193
+Row 83 out of 193
+Row 84 out of 193
+Row 85 out of 193
+Row 86 out of 193
+Row 87 out of 193
+Row 88 out of 193
+Row 88 (468777766) did not converge
+Row 89 out of 193
+Row 90 out of 193
+Row 91 out of 193
+Row 92 out of 193
+Row 93 out of 193
+Row 94 out of 193
+Row 95 out of 193
+Row 96 out of 193
+Row 97 out of 193
+Row 98 out of 193
+Row 99 out of 193
+Row 100 out of 193
+Row 101 out of 193
+Row 102 out of 193
+Row 103 out of 193
+Row 104 out of 193
+Row 105 out of 193
+Row 106 out of 193
+Row 107 out of 193
+Row 108 out of 193
+Row 109 out of 193
+Row 110 out of 193
+Row 111 out of 193
+Row 112 out of 193
+Row 113 out of 193
+Row 114 out of 193
+Row 115 out of 193
+Row 116 out of 193
+Row 117 out of 193
+Row 118 out of 193
+Row 119 out of 193
+Row 120 out of 193
+Row 121 out of 193
+Row 122 out of 193
+Row 123 out of 193
+Row 124 out of 193
+Row 125 out of 193
+Row 126 out of 193
+Row 127 out of 193
+Row 128 out of 193
+Row 129 out of 193
+Row 129 (190986054) did not converge
+Row 130 out of 193
+Row 131 out of 193
+Row 132 out of 193
+Row 133 out of 193
+Row 134 out of 193
+Row 135 out of 193
+Row 136 out of 193
+Row 137 out of 193
+Row 138 out of 193
+Row 139 out of 193
+Row 140 out of 193
+Row 140 (356472238) did not converge
+Row 141 out of 193
+Row 142 out of 193
+Row 143 out of 193
+Row 144 out of 193
+Row 145 out of 193
+Row 146 out of 193
+Row 147 out of 193
+Row 148 out of 193
+Row 149 out of 193
+Row 150 out of 193
+Row 151 out of 193
+Row 152 out of 193
+Row 153 out of 193
+Row 154 out of 193
+Row 155 out of 193
+Row 156 out of 193
+Row 157 out of 193
+Row 158 out of 193
+Row 159 out of 193
+Row 160 out of 193
+Row 161 out of 193
+Row 162 out of 193
+Row 163 out of 193
+Row 164 out of 193
+Row 165 out of 193
+Row 166 out of 193
+Row 167 out of 193
+Row 168 out of 193
+Row 169 out of 193
+Row 170 out of 193
+Row 171 out of 193
+Row 172 out of 193
+Row 173 out of 193
+Row 174 out of 193
+Row 175 out of 193
+Row 176 out of 193
+Row 177 out of 193
+Row 178 out of 193
+Row 179 out of 193
+Row 180 out of 193
+Row 181 out of 193
+Row 182 out of 193
+Row 183 out of 193
+Row 183 (407495930) did not converge
+Row 184 out of 193
+Row 185 out of 193
+Row 186 out of 193
+Row 187 out of 193
+Row 188 out of 193
+Row 189 out of 193
+Row 190 out of 193
+Row 191 out of 193
+Row 192 out of 193
+Row 193 out of 193
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># And we save only those that did converge</span>
+
+<span class="n">only1800</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">only1800</span><span class="p">[</span><span class="s2">&quot;u_star1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()))]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;tois_with_only_1800s_limbdark.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">limbdarkened</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;tois_with_only_1800s_limbdark.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that we have limb-darkening values we can get an approximate value for the radius ratio</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># We calculate for each row</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">limbdarkened</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="c1"># We create a limb-darkened star from the exoplanet package</span>
+    <span class="n">star</span> <span class="o">=</span> <span class="n">xo</span><span class="o">.</span><span class="n">LimbDarkLightCurve</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;u_star1&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;u_star2&quot;</span><span class="p">])</span>
+
+    <span class="c1"># And use the &#39;get_ror_from_approx_transit_depth&#39; utility to obtain an approximate value for the radius ratio</span>
+    <span class="n">ror</span> <span class="o">=</span> <span class="n">star</span><span class="o">.</span><span class="n">get_ror_from_approx_transit_depth</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;pl_trandep&quot;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="n">limbdarkened</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;ror&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ror</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># We can now save this as our final dataframe</span>
+
+<span class="n">limbdarkened</span> <span class="o">=</span> <span class="n">limbdarkened</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">limbdarkened</span><span class="p">[</span><span class="s2">&quot;ror&quot;</span><span class="p">]))]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">limbdarkened</span><span class="p">)</span><span class="si">}</span><span class="s2"> final planet candidates to be passed onto prediction calculation&quot;</span><span class="p">)</span>
+
+<span class="n">limbdarkened</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;final_dataframe.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+157 final planet candidates to be passed onto prediction calculation
+</pre></div></div>
+</div>
+<p>Now we make the actual predictions</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># To make it faster, we will parallelize the calculations</span>
+
+<span class="c1"># CHANGE THIS TO THE NUMBER OF CORES YOU WISH TO USE</span>
+<span class="n">NCORES</span> <span class="o">=</span> <span class="mi">12</span>
+
+<span class="c1"># Read the final input table</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;final_dataframe.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># Now we split them into NCORES tables</span>
+<span class="n">tables</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">NCORES</span><span class="p">)</span>
+
+<span class="c1"># We will calculate predicted radius ratio for the following exposure times</span>
+<span class="n">calc_expt</span> <span class="o">=</span> <span class="p">{</span><span class="mi">20</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">1800</span><span class="p">}</span>
+
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NCORES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># Just to keep track of how each thread is doing</span>
+</pre></div>
+</div>
+</div>
+<p>This function will calculate predictions for each of the tables. We need to include it in a function so as to be able to do multiprocessing</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="k">def</span> <span class="nf">calculate_prediction</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">args</span>
+
+    <span class="n">copy</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">copy</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Loop through all rows</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">copy</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;THREAD </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">copy</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Read the hostname</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;TIC </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">ref_exptime</span> <span class="o">=</span> <span class="mi">1800</span> <span class="c1"># Our reference exposure time is 1800s, to download a reference lightcurve later one</span>
+
+        <span class="c1"># Search the lightcurve</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">lk</span><span class="o">.</span><span class="n">search_lightcurve</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">mission</span><span class="o">=</span><span class="s2">&quot;TESS&quot;</span><span class="p">,</span> <span class="n">exptime</span><span class="o">=</span><span class="n">ref_exptime</span><span class="p">)</span>
+
+        <span class="c1"># We give priority to SPOC lightcurves, then QLP and then CDIPS. No reason beyond keeping lightcurves as homogeneous as possible.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">search</span><span class="p">[[</span><span class="s2">&quot;SPOC&quot;</span> <span class="ow">in</span> <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">search</span> <span class="o">=</span> <span class="n">search</span><span class="p">[[</span><span class="s2">&quot;SPOC&quot;</span> <span class="ow">in</span> <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">search</span><span class="p">[[</span><span class="s2">&quot;QLP&quot;</span> <span class="ow">in</span> <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">search</span> <span class="o">=</span> <span class="n">search</span><span class="p">[[</span><span class="s2">&quot;QLP&quot;</span> <span class="ow">in</span> <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">search</span><span class="p">[[</span><span class="s2">&quot;CDIPS&quot;</span> <span class="ow">in</span> <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]]):</span>
+            <span class="n">search</span> <span class="o">=</span> <span class="n">search</span><span class="p">[[</span><span class="s2">&quot;CDIPS&quot;</span> <span class="ow">in</span> <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="p">]]</span>
+
+        <span class="c1"># Download the lightcurve</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lc</span> <span class="o">=</span> <span class="n">search</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">download_all</span><span class="p">()</span><span class="o">.</span><span class="n">stitch</span><span class="p">()</span><span class="o">.</span><span class="n">remove_nans</span><span class="p">()</span><span class="o">.</span><span class="n">remove_outliers</span><span class="p">(</span><span class="n">sigma_lower</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">lk</span><span class="o">.</span><span class="n">LightkurveError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> lightcurve can&#39;t be downloaded (</span><span class="si">{</span><span class="n">search</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+
+        <span class="c1"># Set the reference mean error of measurements as the mean error for the measurements in the 1800s lightcurve</span>
+        <span class="n">ref_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lc</span><span class="o">.</span><span class="n">flux_err</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="c1"># And the reference timestamps array is also obtained from the lightcurve</span>
+        <span class="n">ref_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lc</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># We also keep track of these values</span>
+        <span class="n">copy</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;ref_exptime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_exptime</span>
+        <span class="n">copy</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;ref_sigma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_sigma</span>
+
+        <span class="c1"># Now we make the actual predictions for each exposure time</span>
+        <span class="k">for</span> <span class="n">exptime</span> <span class="ow">in</span> <span class="n">calc_expt</span><span class="p">:</span>
+            <span class="c1"># New array of timestamps with points spaced by one exposure time and with a total observation time equal to one sector</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ref_t</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ref_t</span><span class="p">),</span> <span class="n">exptime</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span><span class="p">))</span>
+
+            <span class="c1"># Calculate the new mean error for this exposure time</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">ref_sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ref_exptime</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">exptime</span><span class="p">)</span>
+
+            <span class="c1"># Initialize the information matrix. Oversample of ~100 should be fine but can also do 1000, it will just take longer</span>
+            <span class="n">infomatrix</span> <span class="o">=</span> <span class="n">exoInfoMatrix</span><span class="p">(</span><span class="n">exptime</span><span class="p">,</span> <span class="n">oversample</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+            <span class="c1"># This is just to make sure there are no nan values</span>
+            <span class="n">anynan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;pl_orbper&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;pl_tranmid&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ror&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;u_star1&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;u_star2&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_rho&quot;</span><span class="p">],</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_rad&quot;</span><span class="p">]]))</span>
+
+            <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;pl_orbper&quot;</span><span class="p">,</span> <span class="s2">&quot;pl_tranmid&quot;</span><span class="p">,</span> <span class="s2">&quot;ror&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">,</span> <span class="s2">&quot;st_rho&quot;</span><span class="p">,</span> <span class="s2">&quot;st_rad&quot;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> has NaN values for t&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">anynan</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> has NaN values for </span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">anynan</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># If there are no NaNs then we set the data</span>
+            <span class="n">infomatrix</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span>
+                <span class="n">time_array</span> <span class="o">=</span> <span class="n">t</span><span class="p">,</span>
+                <span class="n">period_val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;pl_orbper&quot;</span><span class="p">],</span>
+                <span class="n">t0_val</span>     <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;pl_tranmid&quot;</span><span class="p">],</span>
+                <span class="n">ror_val</span>    <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ror&quot;</span><span class="p">],</span>
+                <span class="n">b_val</span>      <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">],</span>
+                <span class="n">u1_val</span>     <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;u_star1&quot;</span><span class="p">],</span>
+                <span class="n">u2_val</span>     <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;u_star2&quot;</span><span class="p">],</span>
+                <span class="n">rho_star_val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_rho&quot;</span><span class="p">],</span>
+                <span class="n">r_star_val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;st_rad&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Then we set the priors. We do not use a prior on stellar density</span>
+            <span class="n">infomatrix</span><span class="o">.</span><span class="n">set_priors</span><span class="p">(</span>
+                <span class="n">period_prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">row</span><span class="p">[[</span><span class="s2">&quot;pl_orbpererr1&quot;</span><span class="p">,</span> <span class="s2">&quot;pl_orbpererr2&quot;</span><span class="p">]])),</span>
+                <span class="n">t0_prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">row</span><span class="p">[[</span><span class="s2">&quot;pl_tranmiderr1&quot;</span><span class="p">,</span> <span class="s2">&quot;pl_tranmiderr2&quot;</span><span class="p">]])),</span>
+                <span class="n">r_star_prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">row</span><span class="p">[[</span><span class="s2">&quot;st_raderr1&quot;</span><span class="p">,</span> <span class="s2">&quot;st_raderr2&quot;</span><span class="p">]])),</span>
+                <span class="n">b_prior</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span>
+                <span class="n">u1_prior</span> <span class="o">=</span> <span class="mf">0.4713</span><span class="p">,</span>
+                <span class="n">u2_prior</span> <span class="o">=</span> <span class="mf">0.4084</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># And we calculate the information matrix</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">matrix</span> <span class="o">=</span> <span class="n">infomatrix</span><span class="o">.</span><span class="n">eval_cov</span><span class="p">(</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> inversion of matrix failed&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+
+            <span class="c1"># Now we loop through the rows and columns of the matrix to extract the values</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="s2">&quot;ror&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">,</span> <span class="s2">&quot;rho_star&quot;</span><span class="p">,</span> <span class="s2">&quot;r_star&quot;</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">value2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="s2">&quot;ror&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star1&quot;</span><span class="p">,</span> <span class="s2">&quot;u_star2&quot;</span><span class="p">,</span> <span class="s2">&quot;rho_star&quot;</span><span class="p">,</span> <span class="s2">&quot;r_star&quot;</span><span class="p">]):</span>
+
+                    <span class="c1"># Diagonal gives the standard deviation or predicted precision</span>
+                    <span class="k">if</span> <span class="n">value1</span> <span class="o">==</span> <span class="n">value2</span><span class="p">:</span>
+                        <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]))</span>
+                        <span class="n">col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value1</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">exptime</span><span class="si">}</span><span class="s2">_sd&quot;</span>
+                        <span class="n">copy</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">std</span>
+
+    <span class="k">return</span> <span class="n">copy</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Now we parallelize the calculation and execute it</span>
+<span class="c1"># May have problems downloading lightcurves authored by DIAMANTE</span>
+
+<span class="n">arguments</span> <span class="o">=</span> <span class="p">[(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">df</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">indices</span><span class="p">)]</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">NCORES</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">calculate_prediction</span><span class="p">,</span> <span class="n">arguments</span><span class="p">))</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<span class="n">final_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+
+<span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+    <span class="n">final_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">final_df</span><span class="p">,</span> <span class="n">df</span><span class="p">])</span>
+
+<span class="n">final_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;tois_with_predictions.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+THREAD 0: 1 out of 14
+THREAD 3: 1 out of 13
+THREAD 2: 1 out of 13
+THREAD 1: 1 out of 13
+
+
+
+
+THREAD 6: 1 out of 13
+THREAD 5: 1 out of 13
+THREAD 8: 1 out of 13
+THREAD 11: 1 out of 13
+THREAD 4: 1 out of 13
+THREAD 7: 1 out of 13
+THREAD 10: 1 out of 13
+THREAD 9: 1 out of 13
+
+
+
+
+
+
+
+
+THREAD 3: 2 out of 13
+
+THREAD 0: 2 out of 14
+
+THREAD 4: 2 out of 13
+
+THREAD 7: 2 out of 13
+
+THREAD 1: 2 out of 13
+
+THREAD 5: 2 out of 13
+
+THREAD 9: 2 out of 13
+
+THREAD 8: 2 out of 13
+
+THREAD 10: 2 out of 13
+
+THREAD 2: 2 out of 13
+
+THREAD 3: 3 out of 13
+
+THREAD 11: 2 out of 13
+
+THREAD 6: 2 out of 13
+
+THREAD 0: 3 out of 14
+
+THREAD 9: 3 out of 13
+
+TIC 252928337 lightcurve can&#39;t be downloaded ([&#39;DIAMANTE&#39;])
+THREAD 1: 3 out of 13
+
+THREAD 10: 3 out of 13
+
+THREAD 3: 4 out of 13
+
+THREAD 6: 3 out of 13
+
+THREAD 4: 3 out of 13
+
+THREAD 7: 3 out of 13
+
+THREAD 5: 3 out of 13
+
+THREAD 9: 4 out of 13
+
+THREAD 2: 3 out of 13
+
+THREAD 8: 3 out of 13
+
+THREAD 10: 4 out of 13
+
+THREAD 0: 4 out of 14
+
+THREAD 11: 3 out of 13
+
+THREAD 3: 5 out of 13
+
+THREAD 4: 4 out of 13
+
+THREAD 8: 4 out of 13
+
+THREAD 0: 5 out of 14
+
+THREAD 1: 4 out of 13
+
+THREAD 6: 4 out of 13
+
+THREAD 5: 4 out of 13
+
+THREAD 7: 4 out of 13
+
+THREAD 9: 5 out of 13
+
+THREAD 11: 4 out of 13
+
+THREAD 10: 5 out of 13
+
+THREAD 4: 5 out of 13
+
+THREAD 0: 6 out of 14
+
+THREAD 2: 4 out of 13
+
+THREAD 5: 5 out of 13
+
+THREAD 3: 6 out of 13
+
+THREAD 6: 5 out of 13
+
+THREAD 9: 6 out of 13
+
+THREAD 10: 6 out of 13
+
+THREAD 4: 6 out of 13
+
+THREAD 8: 5 out of 13
+
+THREAD 5: 6 out of 13
+
+THREAD 7: 5 out of 13
+
+THREAD 0: 7 out of 14
+
+THREAD 1: 5 out of 13
+
+THREAD 11: 5 out of 13
+
+THREAD 6: 6 out of 13
+
+THREAD 9: 7 out of 13
+
+THREAD 10: 7 out of 13
+
+THREAD 3: 7 out of 13
+
+THREAD 0: 8 out of 14
+
+THREAD 7: 6 out of 13
+
+THREAD 2: 5 out of 13
+
+THREAD 11: 6 out of 13
+
+THREAD 8: 6 out of 13
+
+THREAD 4: 7 out of 13
+
+THREAD 1: 6 out of 13
+
+THREAD 5: 7 out of 13
+
+THREAD 6: 7 out of 13
+
+THREAD 7: 7 out of 13
+
+THREAD 9: 8 out of 13
+
+THREAD 0: 9 out of 14
+
+THREAD 8: 7 out of 13
+
+THREAD 10: 8 out of 13
+
+THREAD 4: 8 out of 13
+
+THREAD 11: 7 out of 13
+
+THREAD 3: 8 out of 13
+
+THREAD 1: 7 out of 13
+
+THREAD 6: 8 out of 13
+
+THREAD 0: 10 out of 14
+
+THREAD 2: 6 out of 13
+
+THREAD 8: 8 out of 13
+
+THREAD 7: 8 out of 13
+
+THREAD 4: 9 out of 13
+
+THREAD 11: 8 out of 13
+
+THREAD 9: 9 out of 13
+
+THREAD 5: 8 out of 13
+
+THREAD 0: 11 out of 14
+
+THREAD 6: 9 out of 13
+
+THREAD 10: 9 out of 13
+
+THREAD 7: 9 out of 13
+
+THREAD 4: 10 out of 13
+
+THREAD 3: 9 out of 13
+
+THREAD 1: 8 out of 13
+
+THREAD 9: 10 out of 13
+
+THREAD 11: 9 out of 13
+
+THREAD 2: 7 out of 13
+
+THREAD 8: 9 out of 13
+
+THREAD 0: 12 out of 14
+
+THREAD 7: 10 out of 13
+
+THREAD 6: 10 out of 13
+
+THREAD 4: 11 out of 13
+
+THREAD 5: 9 out of 13
+
+THREAD 10: 10 out of 13
+
+THREAD 11: 10 out of 13
+
+THREAD 1: 9 out of 13
+
+THREAD 3: 10 out of 13
+
+THREAD 2: 8 out of 13
+
+THREAD 7: 11 out of 13
+
+THREAD 9: 11 out of 13
+
+THREAD 5: 10 out of 13
+
+THREAD 11: 11 out of 13
+
+THREAD 8: 10 out of 13
+
+THREAD 1: 10 out of 13
+
+THREAD 0: 13 out of 14
+
+THREAD 4: 12 out of 13
+
+THREAD 10: 11 out of 13
+
+THREAD 6: 11 out of 13
+
+THREAD 7: 12 out of 13
+
+THREAD 2: 9 out of 13
+
+THREAD 3: 11 out of 13
+
+THREAD 8: 11 out of 13
+
+THREAD 6: 12 out of 13
+
+THREAD 11: 12 out of 13
+
+THREAD 5: 11 out of 13
+
+THREAD 1: 11 out of 13
+
+THREAD 2: 10 out of 13
+
+THREAD 9: 12 out of 13
+
+THREAD 0: 14 out of 14
+
+THREAD 7: 13 out of 13
+
+THREAD 4: 13 out of 13
+
+THREAD 3: 12 out of 13
+
+THREAD 10: 12 out of 13
+
+THREAD 11: 13 out of 13
+
+THREAD 5: 12 out of 13
+
+THREAD 1: 12 out of 13
+
+THREAD 2: 11 out of 13
+
+THREAD 6: 13 out of 13
+
+THREAD 8: 12 out of 13
+
+THREAD 9: 13 out of 13
+
+THREAD 3: 13 out of 13
+
+THREAD 10: 13 out of 13
+
+THREAD 2: 12 out of 13
+
+THREAD 8: 13 out of 13
+
+THREAD 5: 13 out of 13
+
+THREAD 1: 13 out of 13
+
+THREAD 2: 13 out of 13
+
+</pre></div></div>
+</div>
+<p>Now we calculate the actual improvements in precision by using the predicted precisions and make it into a nice table</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">final_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;tois_with_predictions.csv&quot;</span><span class="p">)</span>
+
+<span class="n">improvements</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;toi&#39;</span><span class="p">,</span> <span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="s1">&#39;20_improv&#39;</span><span class="p">,</span> <span class="s1">&#39;120_improv&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_20&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_120&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">])</span>
+
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;toi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_df</span><span class="p">[</span><span class="s1">&#39;toi&#39;</span><span class="p">]</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_df</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_20&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_df</span><span class="p">[</span><span class="s1">&#39;ror_20_sd&#39;</span><span class="p">]</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_120&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_df</span><span class="p">[</span><span class="s1">&#39;ror_120_sd&#39;</span><span class="p">]</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_600&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_df</span><span class="p">[</span><span class="s1">&#39;ror_600_sd&#39;</span><span class="p">]</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_df</span><span class="p">[</span><span class="s1">&#39;ror_1800_sd&#39;</span><span class="p">]</span>
+
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;20_improv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_20&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;120_improv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_120&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;600_improv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_600&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">improvements</span><span class="p">[</span><span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="n">improvements</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;20_improv&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># And this is our nice table with all predictions</span>
+<span class="n">improvements</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>toi</th>
+      <th>tid</th>
+      <th>20_improv</th>
+      <th>120_improv</th>
+      <th>ror_sd_20</th>
+      <th>ror_sd_120</th>
+      <th>ror_sd_1800</th>
+      <th>ror_sd_600</th>
+      <th>600_improv</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>11</th>
+      <td>1677.01</td>
+      <td>87090944</td>
+      <td>77.932100</td>
+      <td>77.709268</td>
+      <td>0.010058</td>
+      <td>0.010160</td>
+      <td>0.045579</td>
+      <td>0.012324</td>
+      <td>72.961336</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>2784.01</td>
+      <td>302766000</td>
+      <td>70.941629</td>
+      <td>70.354258</td>
+      <td>0.023336</td>
+      <td>0.023808</td>
+      <td>0.080307</td>
+      <td>0.036841</td>
+      <td>54.125414</td>
+    </tr>
+    <tr>
+      <th>78</th>
+      <td>3786.01</td>
+      <td>321250206</td>
+      <td>66.841361</td>
+      <td>66.794015</td>
+      <td>0.009582</td>
+      <td>0.009595</td>
+      <td>0.028897</td>
+      <td>0.009857</td>
+      <td>65.889581</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>1701.01</td>
+      <td>274215536</td>
+      <td>66.328226</td>
+      <td>65.003455</td>
+      <td>0.002721</td>
+      <td>0.002828</td>
+      <td>0.008080</td>
+      <td>0.004805</td>
+      <td>40.533684</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>2578.01</td>
+      <td>104986789</td>
+      <td>65.538223</td>
+      <td>65.110207</td>
+      <td>0.001560</td>
+      <td>0.001580</td>
+      <td>0.004528</td>
+      <td>0.001907</td>
+      <td>57.888268</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>3244.01</td>
+      <td>208091447</td>
+      <td>4.763420</td>
+      <td>4.733792</td>
+      <td>0.007618</td>
+      <td>0.007620</td>
+      <td>0.007999</td>
+      <td>0.007662</td>
+      <td>4.211289</td>
+    </tr>
+    <tr>
+      <th>139</th>
+      <td>5664.01</td>
+      <td>158022899</td>
+      <td>3.407098</td>
+      <td>3.350451</td>
+      <td>0.005839</td>
+      <td>0.005842</td>
+      <td>0.006045</td>
+      <td>0.005887</td>
+      <td>2.607795</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>5599.01</td>
+      <td>159160230</td>
+      <td>2.995921</td>
+      <td>2.898366</td>
+      <td>0.002671</td>
+      <td>0.002674</td>
+      <td>0.002753</td>
+      <td>0.002705</td>
+      <td>1.761623</td>
+    </tr>
+    <tr>
+      <th>145</th>
+      <td>5699.01</td>
+      <td>224328450</td>
+      <td>2.988077</td>
+      <td>2.958728</td>
+      <td>0.006361</td>
+      <td>0.006363</td>
+      <td>0.006557</td>
+      <td>0.006392</td>
+      <td>2.518649</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>5637.01</td>
+      <td>136992839</td>
+      <td>2.825291</td>
+      <td>2.802809</td>
+      <td>0.003070</td>
+      <td>0.003071</td>
+      <td>0.003159</td>
+      <td>0.003091</td>
+      <td>2.167626</td>
+    </tr>
+  </tbody>
+</table>
+<p>157 rows × 9 columns</p>
+</div></div>
+</div>
+<p>Can also convert the table to a latex table</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># We select the top 10</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">improvements</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_20&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_120&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_600&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;toi&#39;</span><span class="p">:</span> <span class="s1">&#39;TOI&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;20_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;20s Improv. [%]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;120_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;120s Improv [%]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;600_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;600s Improv [%]&#39;</span>
+<span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">to_latex</span><span class="p">(</span><span class="s1">&#39;improvements_table.tex&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Which is the table used in the paper</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># We also generate a longer table for the appendix</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">improvements</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_20&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_120&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_600&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;toi&#39;</span><span class="p">:</span> <span class="s1">&#39;TOI&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;20_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;20s Improv. [%]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;120_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;120s Improv [%]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;600_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;600s Improv [%]&#39;</span>
+<span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">to_latex</span><span class="p">(</span><span class="s1">&#39;long_improvements_table.tex&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Predictions for all the planet candidates considered in order of decreasing improvements to the radius ratio precision.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>And save a formated csv file of all results</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">formatted_table</span> <span class="o">=</span> <span class="n">improvements</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_20&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_120&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_600&#39;</span><span class="p">,</span> <span class="s1">&#39;ror_sd_1800&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">formatted_table</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;toi&#39;</span><span class="p">:</span> <span class="s1">&#39;TOI&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;20_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;20s_improv&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;120_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;120s_improv&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;600_improv&#39;</span><span class="p">:</span> <span class="s1">&#39;600s_improv&#39;</span>
+<span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">formatted_table</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;formatted_toi_predictions.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="making_predictions.html" class="btn btn-neutral float-left" title="Making predictions of precisions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Julio Hernandez Camero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
