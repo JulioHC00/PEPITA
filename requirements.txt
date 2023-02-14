@@ -4,3 +4,4 @@ exoplanet
 matplotlib
 mkdocs >= 1.2.2
 sphinx-rtd-theme
+nbsphinx
