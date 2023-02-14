@@ -1,103 +1,25 @@
 # Prediction of Exoplanet Precisions using Information in Transit Analysis (PEPITA)
 
-Files relating to the paper "Understanding and predicting cadence effects in the characterization of exoplanet transits" (https://doi.org/10.1093/mnras/stad408)
 
-## Notebooks
+[![Documentation Status](https://readthedocs.org/projects/pepita/badge/?version=latest)](https://pepita.readthedocs.io/en/latest/?badge=latest)
+## Introduction
 
-Some notebooks are provided either as examples of how to use our information analysis class to make predictions of parameter precisions or to showcase how some of the analyses used in the paper were performed.
+PEPITA is a Python package that allows making predictions for the precision of exoplanet parameters using transit light-curves. Behind scenes, it makes use of the Information Analysis techniques to predict the best precision you will get by fitting a light-curve without actually needing to perform the fit.
+### Motivation
 
-### figures/plots.sync.ipynb
+Being able to predict the precision of parameters without needing to perform fits to data allows a more efficient planning of observations or re-observations. For example, if you find that an exoplanet of your interest which has been observed with a cadence of 1800s cadence will get an improved measurement of its radius ratio of 30% if reobserved with 120s cadence, you know that re-observations will be worth it. Or you may find out that the improvement is 1% and re-observing is not worth it.
 
-Code used to generate the plots of the paper.
+For more details about the motivation and results using this package see the [associated paper](https://doi.org/10.1093/mnras/stad408)
 
-### makingpredictions/how_to_make_predictions.sync.ipynb
+## Get started
 
-Example usecase of the exoInfoMatrix class to predict radius ratio precision improvements.
+1. Install the package using
 
-### nolimbdarkeningpredictions/make_predictions.sync.ipynb
-
-Code used to make predictions of radius ratio precisions using the method described in M. Price (2014).
-
-### tois/make_toi_predictions.sync.ipynb
-
-Code used to make predictions for planet candidates.
-
-## Main files
-
-The main results are contained in the following files
-
-### mcmc_fit_results.csv
-
-Contains the results of the transit fits. The colum meanings are
-
-```{style="max_height:100px"}
-- hostname: name of the host star
-- host_mass: mass of the host star (in solar masses)
-- host_radius: radius of the host star (in solar radii)
-- host_radius_sd: standard deviation used in the prior of the host star radius
-- exptime: cadence or exposure time of the fit [s]
-- sectors: sector of the fitted lightcurve
-- model_key: not used
-- seeds: seeds used for each of the chains in the MCMC
-- n_tune: number of tuning steps in the MCMC
-- n_ draw: number of draws in the MCMC
-- n_cores: number of cores used
-- target_accept: target accept parameter of the MCMC
-- n_chains: number of chains in the MCMC
-- transit_points: number of points in the lightcurve that are inside a transit
+```bash
+pip install pepita
 ```
-There are columns which refer to different characteristics of the posterior distributions. The variables are
+2. Read the [docs](https://pepita.readthedocs.io/en/latest/) and follow through the example notebooks.
 
-```{style="max_height:100px"}
-- mean: mean flux of the lightcurve outside the transit
-- t0: reference time of a transit [days]
-- period: period of the transit [days]
-- log_ror: logarithm of the radius ratio
-- ror: radius ratio
-- log_sigma_lc, log_rho_gp, log_sigma_gp: parameters of the Gaussian process
-- u_star1, u_star2: quadratic limb-darkening parameters
-- m_star: mass of the host star
-- r_star: radius of the host star
-- r_pl: radius of the planet (in solar radii)
-- b: impact parameter
-```
-Each of these variables will have a number of columns with extra descriptions ({variable} can be any of the above) in their names corresponding to:
+## Data and others
 
-```{style="max_height:100px"}
-- {variable}_median: median of the posterior
-- {variable}_mean: mean of the posterior
-- {variable}_sd: standard deviation of the posterior
-- {variable}_16p: 16 percentile of the posterior
-- {variable}_84p: 84 percentile of the posterior
-- {variable}_skewness: skewness of the posterior
-- {variable}_rhat: rhat value of the posterior
-```
-
-### information_analysis_results.csv
-
-Contains the same information as mcmc_fit_results.csv with the addition to the following columns for all variables representing predictions of the information analysis made using our numerical method
-
-```{style="max_height:100px"}
--{variable}_fisher_sd: standard deviation of the posterior as predicted using the information analysis
-- {variable1}_{variable2}_cov: covariance of two variables (variable1 and variable2 being any of the variables defined above)
-- transit_dur: duration of the transit [days]
-```
-
-### information_analysis_results_no_limb_darkening.csv
-
-Same as information_analysis_results.csv but with predictions made using the analytical implementation of the information analysis presented by M. Price (2014).
-
-### multisector_results.csv
-
-Same as mcmc_fit_results but for multisector fits. Includes predictions of the precisions calculated using our information analysis method.
-
-### formatted_toi_predictions.csv
-
-Formatted table with all TESS objects of interest predictions.
-
-```
-- TOI: TESS object of interest
-- 20s_improv: improvement in radius ratio precision with reobservations with 20s cadence
-- 120s_improv: improvement in radius ratio precision with reobservations with 120s cadence
-- 600s_improv: improvement in radius ratio precision with reobservations with 600s cadence
-```
+Some notebooks are provided either as examples of how to use our information analysis class to make predictions of parameter precisions or to showcase how some of the analyses used in the paper were performed. These can be found under the data and notebooks directories
