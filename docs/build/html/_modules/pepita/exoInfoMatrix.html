@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pepita.exoInfoMatrix &mdash; PEPITA  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PEPITA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pepita.html">PEPITA Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Example notebooks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PEPITA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pepita.exoInfoMatrix</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pepita.exoInfoMatrix</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">theano</span>
+<span class="kn">import</span> <span class="nn">theano.tensor</span> <span class="k">as</span> <span class="nn">tt</span>
+<span class="kn">import</span> <span class="nn">exoplanet</span> <span class="k">as</span> <span class="nn">xo</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<div class="viewcode-block" id="exoInfoMatrix"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix">[docs]</a><span class="k">class</span> <span class="nc">exoInfoMatrix</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Information Analysis Matrix class.</span>
+
+<span class="sd">    To initalize, use the exposure time (cadence) of the lightcurve in seconds. For example:</span>
+<span class="sd">            </span>
+<span class="sd">        info_matrix = exoInfoMatrix(20) # 20 second cadence</span>
+
+<span class="sd">    Then define the parameters of the fiducial model</span>
+
+<span class="sd">        info_matrix.set_data(</span>
+<span class="sd">                time_array,</span>
+<span class="sd">                period_val,</span>
+<span class="sd">                t0_val,</span>
+<span class="sd">                ror_val,</span>
+<span class="sd">                b_val,</span>
+<span class="sd">                u1_val,</span>
+<span class="sd">                u2_val,</span>
+<span class="sd">                m_star_val,</span>
+<span class="sd">                r_star_val,</span>
+<span class="sd">                )</span>
+
+<span class="sd">    To calculate the covariance matrix, passing the error of the measurements into it</span>
+<span class="sd">        </span>
+<span class="sd">        cov_matrix = info_matrix.eval_cov(sigma)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exptime</span><span class="p">,</span> <span class="n">oversample</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the class</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        exptime : float</span>
+<span class="sd">            exptime or cadence in seconds</span>
+<span class="sd">        oversample : int, optional</span>
+<span class="sd">            number of samples for calculation of binned lightcurves, by default 100</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="c1"># Initialize the fiducial model variables, cadence value and oversample value.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exptime</span> <span class="o">=</span> <span class="n">exptime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oversample</span> <span class="o">=</span> <span class="n">oversample</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_period</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ror</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_u1</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_u2</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m_star_val</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_star_val</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Keeps track of whether the parameters have been defined or not</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># IMPORTANT: This keeps track of the variable names of the model and in which order they&#39;re expected to be given.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legend</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;t&quot;</span>      <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;period&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;t0&quot;</span>     <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;ror&quot;</span>    <span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;b&quot;</span>      <span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s2">&quot;u1&quot;</span>     <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s2">&quot;u2&quot;</span>     <span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                <span class="s2">&quot;m_star&quot;</span> <span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s2">&quot;r_star&quot;</span> <span class="p">:</span> <span class="mi">8</span>
+                <span class="p">}</span>
+
+        <span class="c1"># Keep track of whether derivatives, parameters or priors have been calculated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_params</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_priors</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Initialize the derivatives, prior and covariance matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priors</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cov_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="exoInfoMatrix.set_data"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_array</span><span class="p">,</span> <span class="n">period_val</span><span class="p">,</span> <span class="n">t0_val</span><span class="p">,</span> <span class="n">ror_val</span><span class="p">,</span> <span class="n">b_val</span><span class="p">,</span> <span class="n">u1_val</span><span class="p">,</span> <span class="n">u2_val</span><span class="p">,</span> <span class="n">m_star_val</span><span class="p">,</span> <span class="n">r_star_val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the data for the fiducial model. The fiducial model is used to evaluate the derivatives and can be a first approximation of the planet parameters from the maximum likelihood set of parameters or from previous fits.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        time_array : array[float]</span>
+<span class="sd">            Timestamps of the lightcurve. In days.</span>
+<span class="sd">        period_val : float</span>
+<span class="sd">            Period of the planet in days</span>
+<span class="sd">        t0_val : float</span>
+<span class="sd">            Reference time for the middle of one of the planet transits. In days.</span>
+<span class="sd">        ror_val : float</span>
+<span class="sd">            Radius ratio of the planet and star</span>
+<span class="sd">        b_val : float</span>
+<span class="sd">            Impact parameter of the planet</span>
+<span class="sd">        u1_val : float</span>
+<span class="sd">            First limb-darkening parameter for a quadratic limb-darkening model</span>
+<span class="sd">        u2_val : float</span>
+<span class="sd">            Second limb-darkening parameter for a quadratic limb-darkening model</span>
+<span class="sd">        m_star_val : float</span>
+<span class="sd">            Mass of the star in solar masses</span>
+<span class="sd">        r_star_val : float</span>
+<span class="sd">            Radius of star in solar radii</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Because changing data,</span>
+        <span class="c1"># reset derivative matrix and require it to be calculated again</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_fisher</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+        <span class="c1"># Set values</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">time_array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_period</span> <span class="o">=</span> <span class="n">period_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">t0_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ror</span> <span class="o">=</span> <span class="n">ror_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="n">b_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_u1</span> <span class="o">=</span> <span class="n">u1_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_u2</span> <span class="o">=</span> <span class="n">u2_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span> <span class="o">=</span> <span class="n">m_star_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span> <span class="o">=</span> <span class="n">r_star_val</span>
+
+        <span class="c1"># Initialize scalar variables</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">period</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">ror</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">u2</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">m_star</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">r_star</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dscalar</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ror</span> <span class="o">*</span> <span class="n">r_star</span>
+
+        <span class="c1"># Make sure order is the same as in the legend</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">ror</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">m_star</span><span class="p">,</span> <span class="n">r_star</span><span class="p">]</span>
+
+        <span class="c1"># Initialize star</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">star</span> <span class="o">=</span> <span class="n">xo</span><span class="o">.</span><span class="n">LimbDarkLightCurve</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+
+        <span class="c1"># Initialize orbit. You may change what parameters you use to define the orbit by changing the values above. Remember to define the self._variable, initalize a scalar variable, include your variables in the legend and include it in self.params. </span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">orbit</span> <span class="o">=</span> <span class="n">xo</span><span class="o">.</span><span class="n">orbits</span><span class="o">.</span><span class="n">KeplerianOrbit</span><span class="p">(</span>
+                <span class="n">r_star</span><span class="o">=</span><span class="n">r_star</span><span class="p">,</span>
+                <span class="n">m_star</span><span class="o">=</span><span class="n">m_star</span><span class="p">,</span>
+                <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
+                <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+                <span class="n">b</span><span class="o">=</span><span class="n">b</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Get light_curve function. Same here, you can change how you define the lightcurve</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lc</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">star</span><span class="o">.</span><span class="n">get_light_curve</span><span class="p">(</span>
+                    <span class="n">orbit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orbit</span><span class="p">,</span>
+                    <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span>
+                    <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
+                    <span class="n">texp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exptime</span><span class="o">/</span><span class="p">(</span><span class="mf">3600.0</span><span class="o">*</span><span class="mf">24.0</span><span class="p">),</span>
+                    <span class="n">oversample</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oversample</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="c1"># This function serves for calculating the derivatives</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_and_grad_func</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">function</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lc</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">theano</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_params</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+        <span class="c1"># Updates params in case any has changed. Only for internal use</span>
+    <span class="k">def</span> <span class="nf">_updateParams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Call set data to update params</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span>
+                <span class="n">time_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span>
+                <span class="n">period_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span>
+                <span class="n">t0_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span>
+                <span class="n">ror_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ror</span><span class="p">,</span>
+                <span class="n">b_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span>
+                <span class="n">u1_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_u1</span><span class="p">,</span>
+                <span class="n">u2_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_u2</span><span class="p">,</span>
+                <span class="n">m_star_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span>
+                <span class="n">r_star_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Evaluates the derivative and flux at a single point</span>
+<div class="viewcode-block" id="exoInfoMatrix.eval_point"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.eval_point">[docs]</a>    <span class="k">def</span> <span class="nf">eval_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tval</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the derivatives at a given point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tval : float</span>
+<span class="sd">            Time at which to evaluate the derivatives, in same units as time_array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array</span>
+<span class="sd">            array of derivatives</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If values of the fiducial model have not been set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must define parameters first&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Remember to include here if you&#39;ve changed the variables. The order should be the same as in self.params</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">val_and_grad_func</span><span class="p">(</span>
+                    <span class="n">tval</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ror</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_u1</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_u2</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span>
+                    <span class="p">)</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.eval_deriv_matrix"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.eval_deriv_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">eval_deriv_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the matrix of derivatives for all timestamps in time_array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array</span>
+<span class="sd">            Matrix of derivatives</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If fiducial model parameters have not been defined</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Evaluates the derivative matrix</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must define parameters first&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_point</span><span class="p">(</span><span class="n">tval</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.plot_derivs"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.plot_derivs">[docs]</a>    <span class="k">def</span> <span class="nf">plot_derivs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots the derivatives of the transit model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fig_ax : (figure, axes), optional</span>
+<span class="sd">            If derivatives should be plotted in given figure and axes. Note that this is meant to be used for plotting different model derivatives on top of eachother and so (figure, axis) should be the output of calling plot_derivs() in other model.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (figure, axes)</span>
+<span class="sd">            figure and axes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If derivative matrix hasn&#39;t yet been calculated, do it</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_deriv_matrix</span><span class="p">()</span>
+
+        <span class="c1"># Use figure if given</span>
+        <span class="k">if</span> <span class="n">fig_ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">fig_ax</span>
+
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span>
+            <span class="s2">&quot;Flux&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/dt&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/dperiod&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/dt0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/dror&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/b&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/du1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/du2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/dm_star&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dF/dr_star&quot;</span>
+        <span class="p">]):</span>
+
+            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="p">[:,</span> <span class="n">n</span><span class="p">],</span>
+                        <span class="n">label</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exptime</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
+                        <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span>
+                        <span class="p">)</span>
+
+            <span class="n">ax</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;time [days]&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.setExptime"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.setExptime">[docs]</a>    <span class="k">def</span> <span class="nf">setExptime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exptime</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Changes the exposure time (cadence) of the model. Will force redefinition of parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        exptime : float</span>
+<span class="sd">            The new cadence in seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Can be used to change the cadence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exptime</span> <span class="o">=</span> <span class="n">exptime</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_fisher</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_params</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateParams</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.set_priors"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.set_priors">[docs]</a>    <span class="k">def</span> <span class="nf">set_priors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">period_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">t0_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">ror_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">b_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">u1_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">u2_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">m_star_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">r_star_prior</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Used to define priors for the parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        period_prior : float</span>
+<span class="sd">            Prior for planet period in days</span>
+<span class="sd">        t0_prior : float</span>
+<span class="sd">            Prior for t0 in days</span>
+<span class="sd">        ror_prior : float</span>
+<span class="sd">            Prior for planet ratio</span>
+<span class="sd">        b_prior : float</span>
+<span class="sd">            Prior for impact parameter</span>
+<span class="sd">        u1_prior : float</span>
+<span class="sd">            Prior for first quadratic limb darkening parameter</span>
+<span class="sd">        u2_prior : float</span>
+<span class="sd">            Prior for second quadratic limb darkening parameter</span>
+<span class="sd">        m_star_prior : float</span>
+<span class="sd">            Prior for mass of the star</span>
+<span class="sd">        r_star_prior : float</span>
+<span class="sd">            Prior for radius of the star</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array</span>
+<span class="sd">            Priors matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Used to set the priors</span>
+        <span class="n">diag</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">period_prior</span><span class="p">,</span>
+                <span class="n">t0_prior</span><span class="p">,</span>
+                <span class="n">ror_prior</span><span class="p">,</span>
+                <span class="n">b_prior</span><span class="p">,</span>
+                <span class="n">u1_prior</span><span class="p">,</span>
+                <span class="n">u2_prior</span><span class="p">,</span>
+                <span class="n">m_star_prior</span><span class="p">,</span>
+                <span class="n">r_star_prior</span>
+                <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">priors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_priors</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.erase_priors"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.erase_priors">[docs]</a>    <span class="k">def</span> <span class="nf">erase_priors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Used to erase all priors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Erases any priors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priors</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_priors</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_fisher</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.eval_fisher"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.eval_fisher">[docs]</a>    <span class="k">def</span> <span class="nf">eval_fisher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used to evaluate the information matrix</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sigma : float or array</span>
+<span class="sd">            Error in the flux measurements. Either a single float value to be used for all points or an array of size len(time_array) with individual errors for each timestamps</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array </span>
+<span class="sd">            Information matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Evaluates the fisher information matrix</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must define params first&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_deriv_matrix</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="p">)</span>
+
+        <span class="c1"># -1 because not interested in time</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># +2 because we don&#39;t want the value of flux [0] </span>
+                <span class="c1"># or the value of the time derivative [1]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="p">[:,</span> <span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv_matrix</span><span class="p">[:,</span> <span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Something didn&#39;t work in the calculation&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_priors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.eval_cov"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.eval_cov">[docs]</a>    <span class="k">def</span> <span class="nf">eval_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used to evaluate the covariance matrix</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sigma : float or array</span>
+<span class="sd">            Error in the flux measurements. Either a single float value to be used for all points or an array of size len(time_array) with individual errors for each timestamps</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array </span>
+<span class="sd">            Covariance matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If Fisher matrix not calculated, calculate it</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_fisher</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># Need sigma to calculate it</span>
+            <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need a sigma&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eval_fisher</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="c1"># If it is calculated but a sigma is given, recalculate it</span>
+        <span class="k">elif</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_fisher</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cov_matrix</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.get_in_transit"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.get_in_transit">[docs]</a>    <span class="k">def</span> <span class="nf">get_in_transit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of data points which are in-transit</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of points in transit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get number of points in transit</span>
+        <span class="n">orbit</span> <span class="o">=</span> <span class="n">xo</span><span class="o">.</span><span class="n">orbits</span><span class="o">.</span><span class="n">KeplerianOrbit</span><span class="p">(</span>
+                <span class="n">t0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span>
+                <span class="n">period</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span>
+                <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span>
+                <span class="n">m_star</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span>
+                <span class="n">r_star</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span><span class="p">,</span>
+                <span class="n">ror</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ror</span>
+                <span class="p">)</span>
+        <span class="n">in_transit</span> <span class="o">=</span> <span class="n">orbit</span><span class="o">.</span><span class="n">in_transit</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span>
+                <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ror</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span><span class="p">,</span>
+                <span class="n">texp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exptime</span><span class="o">/</span><span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">24</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">in_transit</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.get_approx_transit_duration"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.get_approx_transit_duration">[docs]</a>    <span class="k">def</span> <span class="nf">get_approx_transit_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Approximate the duration of the transit. Not efficient and used only for testing purposes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_points : int, optional</span>
+<span class="sd">            number of points for calculating appproximation, by default 10000</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Approximate duration of the transit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make an approximation of the transit duration. The higher the number of points the more accurate it will be</span>
+        <span class="n">dur_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
+
+        <span class="n">orbit</span> <span class="o">=</span> <span class="n">xo</span><span class="o">.</span><span class="n">orbits</span><span class="o">.</span><span class="n">KeplerianOrbit</span><span class="p">(</span>
+                <span class="n">t0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">period</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span>
+                <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span>
+                <span class="n">m_star</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span>
+                <span class="n">r_star</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span><span class="p">,</span>
+                <span class="n">ror</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ror</span>
+                <span class="p">)</span>
+        <span class="n">in_transit</span> <span class="o">=</span> <span class="n">orbit</span><span class="o">.</span><span class="n">in_transit</span><span class="p">(</span>
+                <span class="n">dur_t</span><span class="p">,</span>
+                <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ror</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_star</span><span class="p">,</span>
+                <span class="n">texp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exptime</span><span class="o">/</span><span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">24</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">prev_val</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">in_transit</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">prev_val</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="k">continue</span>
+
+            <span class="n">next_val</span> <span class="o">=</span> <span class="n">prev_val</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">next_val</span> <span class="o">!=</span> <span class="n">val</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="n">prev_val</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">end</span> <span class="o">=</span> <span class="n">prev_val</span>
+                    <span class="n">prev_val</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="k">break</span>
+
+            <span class="n">prev_val</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="n">duration</span> <span class="o">=</span> <span class="n">dur_t</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="o">-</span> <span class="n">dur_t</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">duration</span></div>
+
+<div class="viewcode-block" id="exoInfoMatrix.set_t"><a class="viewcode-back" href="../../pepita.html#pepita.exoInfoMatrix.exoInfoMatrix.set_t">[docs]</a>    <span class="k">def</span> <span class="nf">set_t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_array</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the time array of the model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        time_array : array</span>
+<span class="sd">            New timestamps for the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Sets the time array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">time_array</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_deriv</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_fisher</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateParams</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Julio Hernandez Camero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
