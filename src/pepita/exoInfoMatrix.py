@@ -5,8 +5,7 @@ import exoplanet as xo
 import matplotlib.pyplot as plt
 
 class exoInfoMatrix:
-    """
-    Information Analysis Matrix class.
+    """ Information Analysis Matrix class.
 
     To initalize, use the exposure time (cadence) of the lightcurve in seconds. For example:
             
@@ -29,9 +28,17 @@ class exoInfoMatrix:
     To calculate the covariance matrix, passing the error of the measurements into it
         
         cov_matrix = info_matrix.eval_cov(sigma)
-
     """
     def __init__(self, exptime, oversample=100):
+        """Initialize the class
+
+        Parameters
+        ----------
+        exptime : float
+            exptime or cadence in seconds
+        oversample : int, optional
+            number of samples for calculation of binned lightcurves, by default 100
+        """        
         # Initialize the fiducial model variables, cadence value and oversample value.
         self.exptime = exptime
         self.oversample = oversample
@@ -72,29 +79,27 @@ class exoInfoMatrix:
         self.cov_matrix = None
 
     def set_data(self, time_array, period_val, t0_val, ror_val, b_val, u1_val, u2_val, m_star_val, r_star_val):
-        """
-        Set the data for the fiducial model. The fiducial model is used to evaluate the derivatives and can be a first approximation of the planet parameters from the maximum likelihood set of parameters or from previous fits.
+        """Set the data for the fiducial model. The fiducial model is used to evaluate the derivatives and can be a first approximation of the planet parameters from the maximum likelihood set of parameters or from previous fits.
 
         Parameters
         ----------
-
-        time_array: array[float]
+        time_array : array[float]
             Timestamps of the lightcurve. In days.
-        period_val: float
+        period_val : float
             Period of the planet in days
-        t0_val: float
+        t0_val : float
             Reference time for the middle of one of the planet transits. In days.
-        ror_val: float
+        ror_val : float
             Radius ratio of the planet and star
-        b_val: float
+        b_val : float
             Impact parameter of the planet
-        u1_val: float
+        u1_val : float
             First limb-darkening parameter for a quadratic limb-darkening model
-        u2_val: float
+        u2_val : float
             Second limb-darkening parameter for a quadratic limb-darkening model
-        m_star_val: float
+        m_star_val : float
             Mass of the star in solar masses
-        r_star_val: float
+        r_star_val : float
             Radius of star in solar radii
         """
 
@@ -188,23 +193,22 @@ class exoInfoMatrix:
 
         # Evaluates the derivative and flux at a single point
     def eval_point(self, tval):
-        """
-        Evaluates the derivatives at a given point
+        """Evaluates the derivatives at a given point
 
         Parameters
         ----------
-
-        tval: float
+        tval : float
             Time at which to evaluate the derivatives, in same units as time_array
+
+        Returns
+        -------
+        array
+            array of derivatives
 
         Raises
         ------
         ValueError
             If values of the fiducial model have not been set.
-
-        Returns
-        -------
-        array of derivatives
         """
         if not self._has_params:
             raise ValueError("Must define parameters first")
@@ -225,12 +229,17 @@ class exoInfoMatrix:
                 )
 
     def eval_deriv_matrix(self):
-        """
-        Evaluates the matrix of derivatives for all timestamps in time_array
+        """Evaluates the matrix of derivatives for all timestamps in time_array
 
         Returns
         -------
-        array matrix
+        array
+            Matrix of derivatives
+
+        Raises
+        ------
+        ValueError
+            If fiducial model parameters have not been defined
         """
         # Evaluates the derivative matrix
         if not self._has_params:
@@ -247,18 +256,17 @@ class exoInfoMatrix:
         return self.deriv_matrix
 
     def plot_derivs(self, fig_ax=None):
-        """
-        Plots the derivatives of the transit model.
+        """Plots the derivatives of the transit model.
 
         Parameters
         ----------
-
-        fig_ax: (figure, axes)
+        fig_ax : (figure, axes), optional
             If derivatives should be plotted in given figure and axes. Note that this is meant to be used for plotting different model derivatives on top of eachother and so (figure, axis) should be the output of calling plot_derivs() in other model.
 
         Returns
         -------
         (figure, axes)
+            figure and axes
         """
         # If derivative matrix hasn't yet been calculated, do it
         if not self._has_deriv:
@@ -302,13 +310,11 @@ class exoInfoMatrix:
         return fig, ax
 
     def setExptime(self, exptime):
-        """
-        Changes the exposure time (cadence) of the model. Will force redefinition of parameters
+        """Changes the exposure time (cadence) of the model. Will force redefinition of parameters
 
         Parameters
         ----------
-
-        exptime: float
+        exptime : float
             The new cadence in seconds.
         """
         # Can be used to change the cadence
@@ -321,28 +327,31 @@ class exoInfoMatrix:
         self._updateParams()
 
     def set_priors(self, period_prior=np.nan, t0_prior=np.nan, ror_prior=np.nan, b_prior=np.nan, u1_prior=np.nan, u2_prior=np.nan, m_star_prior=np.nan, r_star_prior=np.nan):
-        """
-        Used to define priors for the parameters
+        """ Used to define priors for the parameters
 
         Parameters
         ----------
-
-        period_prior: float
+        period_prior : float
             Prior for planet period in days
-        t0_prior: float
+        t0_prior : float
             Prior for t0 in days
-        ror_prior: float
+        ror_prior : float
             Prior for planet ratio
-        b_prior: float
+        b_prior : float
             Prior for impact parameter
-        u1_prior: float
+        u1_prior : float
             Prior for first quadratic limb darkening parameter
-        u2_prior: float
+        u2_prior : float
             Prior for second quadratic limb darkening parameter
-        m_star_prior: float
+        m_star_prior : float
             Prior for mass of the star
-        r_star_prior: float
+        r_star_prior : float
             Prior for radius of the star
+
+        Returns
+        -------
+        array
+            Priors matrix
         """
         # Used to set the priors
         diag = [
@@ -371,18 +380,17 @@ class exoInfoMatrix:
         self._has_fisher = False
 
     def eval_fisher(self, sigma):
-        """
-        Used to evaluate the information matrix
+        """Used to evaluate the information matrix
 
         Parameters
         ----------
-
-        sigma: float or array
+        sigma : float or array
             Error in the flux measurements. Either a single float value to be used for all points or an array of size len(time_array) with individual errors for each timestamps
 
         Returns
         -------
-        array matrix
+        array 
+            Information matrix
         """
         # Evaluates the fisher information matrix
         if not self._has_params:
@@ -414,18 +422,17 @@ class exoInfoMatrix:
         return self.fisher_matrix
 
     def eval_cov(self, sigma=None):
-        """
-        Used to evaluate the covariance matrix
+        """Used to evaluate the covariance matrix
 
         Parameters
         ----------
-
-        sigma: float or array
+        sigma : float or array
             Error in the flux measurements. Either a single float value to be used for all points or an array of size len(time_array) with individual errors for each timestamps
 
         Returns
         -------
-        array matrix
+        array 
+            Covariance matrix
         """
         # If Fisher matrix not calculated, calculate it
         if self._has_fisher is False:
@@ -443,12 +450,12 @@ class exoInfoMatrix:
         return self.cov_matrix
 
     def get_in_transit(self):
-        """
-        Get the number of data points which are in-transit
+        """Get the number of data points which are in-transit
 
         Returns
         -------
         int
+            Number of points in transit
         """
         # Get number of points in transit
         orbit = xo.orbits.KeplerianOrbit(
@@ -467,8 +474,17 @@ class exoInfoMatrix:
         return in_transit
 
     def get_approx_transit_duration(self, n_points=10000):
-        """
-        Approximate the duration of the transit. Not efficient and used only for testing purposes
+        """Approximate the duration of the transit. Not efficient and used only for testing purposes
+
+        Parameters
+        ----------
+        n_points : int, optional
+            number of points for calculating appproximation, by default 10000
+
+        Returns
+        -------
+        float
+            Approximate duration of the transit
         """
         # Make an approximation of the transit duration. The higher the number of points the more accurate it will be
         dur_t = np.linspace(-self._period, self._period, n_points)
@@ -516,13 +532,11 @@ class exoInfoMatrix:
         return duration
 
     def set_t(self, time_array):
-        """
-        Change the time array of the model
+        """Change the time array of the model
 
         Parameters
         ----------
-
-        time_array: array
+        time_array : array
             New timestamps for the data
         """
         # Sets the time array
