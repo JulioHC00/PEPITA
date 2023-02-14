@@ -24,7 +24,7 @@ PEPITA is a Python package that allows making predictions for the precision of e
 
 Being able to predict the precision of parameters without needing to perform fits to data allows a more efficient planning of observations or re-observations. For example, if you find that an exoplanet of your interest which has been observed with a cadence of 1800s cadence will get an improved measurement of its radius ratio of 30% if reobserved with 120s cadence, you know that re-observations will be worth it. Or you may find out that the improvement is 1% and re-observing is not worth it.
 
-For more details about the motivation and results using this package see the [associated paper](https://doi.org/10.1093/mnras/stad408)
+For more details about the motivation and results using this package see the [associated paper](https://doi.org/10.1093/mnras/stad408) ([ArXiv version](https://doi.org/10.1093/mnras/stad408))
 
 ## Get started
 
